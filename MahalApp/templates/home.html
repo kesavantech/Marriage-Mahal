@@ -1,76 +1,9 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  
-  <!-- Font Awesome CSS (for social icons) -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+{% block title %} Home {% endblock %}
 
-  <style>
-    footer a {
-      transition: color 0.3s ease-in-out;
-    }
-    footer a:hover {
-      color: #8525d3; /* WhatsApp green */
-    }
-  </style>
-</head>
-<body>
- <!-- ✅ Responsive Navbar with Icons -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light border-top">
-  <div class="container">
-  <!-- Brand / Logo -->
-  <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
-    <img src="{% static 'images/murugan1.png' %}" alt="Muthukumaran Mahal Logo" width="150" height="150" class="me-3">
-    <span style="font-size: 2.5rem; font-weight: 700; line-height: 1;">Muthukumaran Mahal</span>
-  </a>
-</div>
-
-
-
-    <!-- Hamburger Menu (Mobile) -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <!-- Collapsible Links -->
-    <div class="collapse navbar-collapse" id="mainNav">
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-4">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'home' %}">
-            <i class="fas fa-home me-1"></i> Home
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'about' %}">
-            <i class="fas fa-info-circle me-1"></i> About Us
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'login' %}">
-            <i class="fas fa-sign-in-alt me-1"></i> Login
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'special' %}">
-            <i class="fas fa-star me-1"></i> Specials
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'contact' %}">
-            <i class="fas fa-phone-alt me-1"></i> Contact Us
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+{% block content %}
 
 
   <!-- Full-width Big Image -->
@@ -293,71 +226,9 @@
 </section>
 <br>
 <br>
-<!-- ✅ Footer Section -->
-<footer class="bg-dark text-white pt-5 pb-4">
-  <div class="container text-md-left">
-    <div class="row">
-
-      <!-- 1. Brand & Description -->
-      <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mb-4">
-        <h5 class="text-uppercase fw-bold mb-3">Muthukumaran Mahal</h5>
-        <p>
-          The perfect venue for weddings, engagements, birthday parties, corporate events, and more. 
-          Elegant hall with AC/Non-AC options, ample parking, professional catering, and decoration services.
-        </p>
-      </div>
-
-      <!-- 2. Contact Info -->
-      <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mb-4">
-        <h5 class="text-uppercase fw-bold mb-3">Contact</h5>
-        <p>
-          <i class="fab fa-whatsapp me-2"></i> +91 9942922399
-        </p>
-        <p>
-          <i class="fas fa-phone-alt me-2"></i> +91 9942922399
-        </p>
-        <p>
-          <i class="fas fa-envelope me-2"></i> kesavanmk19@gmail.com
-        </p>
-      </div>
-
-      <!-- 3. Location -->
-      <div class="col-md-5 col-lg-5 col-xl-5 mx-auto mb-4">
-        <h5 class="text-uppercase fw-bold mb-3">Location</h5>
-        <p>
-          <i class="fas fa-map-marker-alt me-2"></i>
-          Muthukumaran Mahal, Peruntholuvu, Tirupur District, Alagumalai Road, Pin 641 665
-        </p>
-        <a href="https://www.google.com/maps/dir/?api=1&destination=11.0483951,77.4315152" target="_blank" class="text-decoration-none text-white">
-          View on Google Maps
-        </a>
-      </div>
-    </div>
-
-    <hr class="mb-4" style="background-color: #fff; opacity: 0.2;">
-
-    <div class="row align-items-center">
-      <!-- Social Media -->
-      <div class="col-md-6 col-lg-6">
-        <h6 class="mb-0">Follow Us:</h6>
-        <a href="https://www.instagram.com/___kesav7?utm_source=qr&igsh=MjQ2NnV2c2trcWQw" target="_blank" class="text-white fs-4 me-3">
-          <i class="fab fa-instagram"></i>
-        </a>
-        <a href="https://wa.me/919942922399" target="_blank" class="text-white fs-4 me-3">
-          <i class="fab fa-whatsapp"></i>
-        </a>
-      </div>
-
-      <!-- Copyright -->
-      <div class="col-md-6 col-lg-6 text-md-end mt-3 mt-md-0">
-        <p class="mb-0">&copy; 2025 Muthukumaran Mahal. All Rights Reserved.</p>
-      </div>
-    </div>
-  </div>
-</footer>
 
 
-  <!-- ✅ Bootstrap JS (needed for menu toggle) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+
+
+
+{%  endblock %}

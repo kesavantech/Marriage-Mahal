@@ -42,3 +42,12 @@ def whatsapp_greet(request):
     message = "Vanakkam 🙏, Welcome to Muthukumaran Mahal! How can we help you?"
     whatsapp_url = f"https://wa.me/{phone_number}?text={message}"
     return redirect(whatsapp_url)
+
+
+
+def header_view(request):
+    return render(request, 'partials/header.html')
+
+
+def footer_view(request):
+    return render(request, 'partials/footer.html')
