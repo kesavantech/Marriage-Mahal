@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
 import requests
 
-def HomeSliderView(request):
-    return render(request, 'admin/HomeSlider.html')
+def PartialsView(request):
+    return render(request, 'admin/Partials.html')
