@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 import requests
-# Create your views here.
 from django.http import HttpResponse
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from MahalApp.models import User
 
 def home_view(request):
     return render(request,'home.html')
@@ -28,7 +28,6 @@ def about_view(request):
 
     return render(request,'about.html',{'weather':weather_data})
 
-from MahalApp.models import User
 def register_view(request):
     if request.method=='POST':
         username=request.POST.get('username')
@@ -70,33 +69,22 @@ def login_view(request):
             messages.error(request, "Invalid Email !")
             return redirect('login')
     
-    
-            '''
-        🔹 authenticate() என்றால் என்ன?
-
-        👉 Django-வின் login checker
-
-        இது 3 விஷயம் பண்ணும்:
-
-        1️⃣ நீ கொடுத்த password-ஐ hash பண்ணும்
-        2️⃣ Database-ல இருக்குற hashed password-கிட்ட compare பண்ணும்
-        3️⃣ Correct என்றால் → User object return பண்ணும்
-        ❌ Wrong என்றால் → None return பண்ணும்
-            '''
-
-        user=authenticate(request, user=user.username, password=password)
+        user=authenticate(request, username=user.username, password=password)
             
         if user is None:
             messages.error(request,'Invalid Password !')
             return redirect('login')
         
         login(request, user)
-        messages.success(request,f'Login SuccesFully As a {user.role.upper()}')
+        messages.success(request,f'Login SuccesFully')
         return redirect('dashboard')
 
     return render(request,'login.html')
 
 def dashboard_view(request):
+    if request.user.role == 'admin':
+        all_users = User.objects.all()
+        return render(request, 'dashboard.html', {'all_users': all_users})
     return render(request, 'dashboard.html')
 
 def special_view(request):
@@ -105,19 +93,18 @@ def special_view(request):
 def contact_view(request):
     return render(request,'contact.html')
 
-from django.shortcuts import redirect
-
 def whatsapp_greet(request):
-    phone_number = "919342532503"  # Your WhatsApp number
+    phone_number = "919342532503"
     message = "Vanakkam 🙏, Welcome to Muthukumaran Mahal! How can we help you?"
     whatsapp_url = f"https://wa.me/{phone_number}?text={message}"
     return redirect(whatsapp_url)
 
-
-
 def header_view(request):
     return render(request, 'partials/header.html')
 
-
 def footer_view(request):
     return render(request, 'partials/footer.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
