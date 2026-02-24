@@ -76,27 +76,35 @@ def home_slider_view(request):
 
 
 from MahalApp.models import HomeBanner
+
 @login_required
 def home_banner_view(request):
-
     if not request.user.is_superuser:
         messages.error(request, "Access Denied!")
         return redirect("dashboard")
 
     if request.method == "POST":
-        image = request.FILES.get("image")
-        title = request.POST.get("title")
-        subtitle = request.POST.get("subtitle")
+        image = request.FILES.getlist("image")
+        title = request.POST.getlist("title")
+        subtitle = request.POST.getlist("subtitle")
 
         if image:
-            HomeBanner.objects.create(
-                image=image,
-                title=title,
-                subtitle=subtitle
+
+            #Delete Old Banners
+            HomeBanner.objects.all().delete()
+
+            #create new Banners 
+
+            for i in range(len(image)):
+                  HomeBanner.objects.create(
+                image=image[i],
+                title=title[i],
+                subtitle=subtitle[i]
             )
             messages.success(request, "Home Banner Is Created!")
             return redirect("home_banner")
         else:
-            messages.error(request, "Image Is Required!")
+            messages.error(request, "Image Is Required !")
 
     return render(request, "admin/home_banner.html")
+

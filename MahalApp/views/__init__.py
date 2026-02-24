@@ -16,5 +16,5 @@ from .common_views import (
 )
 # Import admin views
 from .admin_views import (
-    PartialsView, home_slider_view
+    PartialsView, home_slider_view,home_banner_view
 )
