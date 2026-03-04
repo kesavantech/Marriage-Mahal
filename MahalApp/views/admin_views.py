@@ -112,3 +112,6 @@ def home_banner_view(request):
 
     return render(request, "admin/home_banner.html")
 
+
+def users_view(request):
+    return render(request, "admin/users.html")
