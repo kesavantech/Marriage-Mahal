@@ -52,6 +52,20 @@ class HomeSlider(models.Model):
     bg_color=models.CharField(max_length=100, null=True, blank=True)
     font_color=models.CharField(max_length=100, null=True, blank=True)
     font_size=models.CharField(max_length=100, null=True, blank=True)
+
+    font_choice = [
+        ("Arial", "Arial"),
+    ("Georgia", "Georgia"),
+    ("Times New Roman", "Times New Roman"),
+    ("Poppins", "Poppins"),
+    ("Montserrat", "Montserrat"),
+    ("Roboto", "Roboto"),
+    ("Lato", "Lato"),
+    ("Open Sans", "Open Sans"),
+    ("Playfair Display", "Playfair Display"),
+
+    ]
+    font_family = models.CharField(max_length=100, choices=font_choice, default='Arial', null=True, blank=True)
     logo=models.FileField(upload_to="logo/",null=True, blank=True)
     logo_radius=models.IntegerField(default=40)
     whatsapp_no=models.CharField(max_length=100, null=True, blank=True)

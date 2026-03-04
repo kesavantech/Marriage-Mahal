@@ -43,6 +43,20 @@
                                        value="{{ home.font_size|default:'16' }}" min="10" max="100">
                             </div>
 
+                             <div class="col-md-6 mb-3">
+                                <label for="font_family" class="form-label">Font Family</label>
+                                <select name="font_family" id="font_family" class="form-select">
+
+    {% for value, label in font_choice %}
+        <option value="{{ value }}"
+            {% if home.font_family == value %}selected{% endif %}>
+            {{ label }}
+        </option>
+    {% endfor %}
+
+</select>
+                            </div>
+
                             <div class="col-md-6 mb-3">
                                 <label for="logo_radius" class="form-label">Logo Radius (px)</label>
                                 <input type="number" name="logo_radius" id="logo_radius" class="form-control" 

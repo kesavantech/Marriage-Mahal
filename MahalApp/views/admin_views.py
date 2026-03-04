@@ -24,6 +24,7 @@ def home_slider_view(request):
         font_color = request.POST.get("font_color", "#000000")
         font_size = request.POST.get("font_size", "16")
         logo_radius = request.POST.get("logo_radius", "40")
+        font_family = request.POST.get("font_family")
         whatsapp_no=request.POST.get("whatsapp_no")
         phone=request.POST.get("phone")
         gmail=request.POST.get("gmail")
@@ -38,6 +39,7 @@ def home_slider_view(request):
         home.bg_color = bg_color
         home.font_color = font_color
         home.font_size = font_size
+        home.font_family = font_family
         home.logo_radius = int(logo_radius) if logo_radius.isdigit() else 40
         home.whatsapp_no = whatsapp_no
         home.phone = phone
@@ -71,7 +73,9 @@ def home_slider_view(request):
             messages.error(request, f'Error saving settings: {str(e)}')
     
     # Render form with current data
-    context = {'home': home}
+    context = {'home': home,
+               "font_choice":HomeSlider._meta.get_field("font_family").choices
+               }
     return render(request, 'admin/home_slider.html', context)
 
 
