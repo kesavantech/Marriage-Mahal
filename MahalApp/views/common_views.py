@@ -42,13 +42,17 @@ def about_view(request):
 def register_view(request):
     if request.method=='POST':
         username=request.POST.get('username')
+        
         email=request.POST.get('email')
         phone=request.POST.get('phone')
         role=request.POST.get('role')
         address=request.POST.get('address')
         password=request.POST.get('password')
         password1=request.POST.get('password1')
-        
+        profile = None
+        if request.FILES.get("profile"):
+            profile = request.FILES.get("profile")
+
         if User.objects.filter(email=email).exists():
             messages.error(request,'Email Is Already Exist !')
             return redirect('register')
@@ -63,7 +67,8 @@ def register_view(request):
 
         User.objects.create_user(
             username=username, email=email, phone=phone, role=role, address=address,
-            password=password1)
+            password=password1, profile = profile
+            )
         messages.success(request,'You Are Register Successfully !')
         return redirect('login')
     return render(request,'register.html')

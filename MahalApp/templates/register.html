@@ -6,11 +6,14 @@
 <div class="container">
     <div style="background-color:red; padding:20px;">
 
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
             <label>Username</label><br>
             <input type="text" name="username" required><br><br>
+
+            <label>Profile</label><br>
+            <input type="file" name="profile" accept="image*/"><br><br>
 
             <label>Email</label><br>
             <input type="email" name="email" required><br><br>

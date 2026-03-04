@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 import requests
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from MahalApp.models import HomeSlider
+from MahalApp.models import HomeSlider, User
 
 def PartialsView(request):
     return render(request, 'admin/Partials.html')
@@ -112,6 +112,19 @@ def home_banner_view(request):
 
     return render(request, "admin/home_banner.html")
 
-
+from MahalApp.models import User
+@login_required
 def users_view(request):
-    return render(request, "admin/users.html")
+    if not request.user.is_superuser:
+        messages.error(request,'Access Denied !')
+        return redirect('login')
+    
+    users = User.objects.all()
+    for user in users:
+        print(f"[DEBUG]: {user.username}")
+        print(f"[DEBUG]: {user.email}")
+        print(f"[DEBUG]: {user.profile}")
+    context = {
+        "users":users
+    }
+    return render(request, "admin/users.html", context)

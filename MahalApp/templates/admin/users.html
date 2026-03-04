@@ -1,6 +1,57 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>I am user page !</h1>
+<style>
+    table {
+        width:100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: center;
+    }
+
+    th{
+        background-color:burlywood;
+    }
+    img {
+        width:60px;
+        height:60px;
+        object-fit:cover;
+        border-radius: 50%;
+    }
+</style>
+<table>
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>role</th>
+        <th>Address</th>
+        <th>Profile</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td> {{user.username}} </td>
+        <td> {{user.email}} </td>
+        <td> {{user.phone}} </td>
+        <td> {{user.role}} </td>
+        <td> {{user.address}} </td>
+        <td>
+            {% if user.profile %}
+            <img src="{{ user.profile.url }}" width="60">
+            {% else %}
+            <h3>User Don't Have Profile !</h3>
+            {% endif %}
+        </td>
+    </tr>
+     {% endfor %}
+</table>
+
+<br>
+<br>
+
 
 {% endblock %}

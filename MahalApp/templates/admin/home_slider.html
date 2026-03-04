@@ -47,7 +47,7 @@
                                 <label for="font_family" class="form-label">Font Family</label>
                                 <select name="font_family" id="font_family" class="form-select">
 
-    {% for value, label in font_choice %}
+    {% for value, label in font_choices %}
         <option value="{{ value }}"
             {% if home.font_family == value %}selected{% endif %}>
             {{ label }}
