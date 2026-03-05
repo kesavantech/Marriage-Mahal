@@ -1,57 +1,77 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container" style="margin-top: 200px;">
+
+<div class="container">
     <div class="row">
-        <div class="col-12">
+
+        <!-- LEFT SIDE MAIN DASHBOARD -->
+        <div class="col-md-9 mt-0" >
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
+                    <h4 class="ms-0">
                         <i class="fas fa-tachometer-alt me-2"></i>
                         Welcome, {{ user.username }}!
                     </h4>
                     <small>Role: {{ user.role|title }}</small>
                 </div>
+
                 <div class="card-body">
+
                     {% if user.role == 'admin' %}
-                        <h5 class="text-primary mb-3">
-                            <i class="fas fa-user-shield me-2"></i>Admin Dashboard
+                        <h5 class="text-primary">
+                            <i class="fas fa-user-shield me-2"></i>
+                            Admin Dashboard
                         </h5>
-                        <div class="d-grid gap-3">
-                            <a href="{% url 'home_slider' %}" class="btn btn-outline-primary btn-lg">
-                                <i class="fas fa-sliders-h me-2"></i>Home Slider
-                            </a>
-                            <a href="{% url 'home_banner' %}" class="btn btn-outline-primary btn-lg">
-                                <i class="fas fa-users me-2"></i>Home Banner
-                            </a>
-                        </div>
+                        <p>Welcome to admin panel. Use the right menu to manage homepage.</p>
+
                     {% elif user.role == 'client' %}
-                        <h5 class="text-success mb-3">
-                            <i class="fas fa-user me-2"></i>Client Dashboard
+                        <h5 class="text-success">
+                            <i class="fas fa-user me-2"></i>
+                            Client Dashboard
                         </h5>
-                        <div class="d-grid gap-3">
-                            <a href="#" class="btn btn-outline-success btn-lg">
-                                <i class="fas fa-calendar-plus me-2"></i>New Booking
-                            </a>
-                            <a href="#" class="btn btn-outline-success btn-lg">
-                                <i class="fas fa-list me-2"></i>My Bookings
-                            </a>
-                        </div>
+
                     {% else %}
-                        <h5 class="text-warning mb-3">
-                            <i class="fas fa-user-tie me-2"></i>Manager Dashboard
+                        <h5 class="text-warning">
+                            <i class="fas fa-user-tie me-2"></i>
+                            Manager Dashboard
                         </h5>
-                        <div class="d-grid gap-3">
-                            <a href="#" class="btn btn-outline-warning btn-lg">
-                                <i class="fas fa-tasks me-2"></i>Manage Bookings
-                            </a>
-                            <a href="#" class="btn btn-outline-warning btn-lg">
-                                <i class="fas fa-chart-bar me-2"></i>Reports
-                            </a>
-                        </div>
+
                     {% endif %}
+
                 </div>
             </div>
         </div>
+
+
+        <!-- RIGHT SIDE NAVIGATION -->
+        {% if user.role == 'admin' %}
+        <div class="col-md-3">
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    Navigation
+                </div>
+
+                <div class="list-group list-group-flush">
+
+                    <a href="{% url 'home_slider' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-sliders-h me-2"></i>
+                        Home Slider
+                    </a>
+
+                    <a href="{% url 'home_banner' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-image me-2"></i>
+                        Home Banner
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+        {% endif %}
+
     </div>
 </div>
+
 {% endblock %}

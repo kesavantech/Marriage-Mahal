@@ -26,6 +26,8 @@ urlpatterns=[
     path('home_slider/', views.home_slider_view, name='home_slider'),
     path('home_banner/', views.home_banner_view, name='home_banner'),
     path("users/", views.users_view, name='users'),
+    path("update_user_profile/<int:user_id>/", views.update_user_profile_view, name="update_user_profile_view"),
+
 ]
 
 

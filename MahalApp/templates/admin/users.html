@@ -31,6 +31,9 @@
         <th>role</th>
         <th>Address</th>
         <th>Profile</th>
+        <th>Update</th>
+        <th>Status</th>
+        <th>Action</th>
     </tr>
     {% for user in users %}
     <tr>
@@ -43,11 +46,27 @@
             {% if user.profile %}
             <img src="{{ user.profile.url }}" width="60">
             {% else %}
-            <h3>User Don't Have Profile !</h3>
+            <p style="text-shadow: #000;">User Don't Have Profile !</p>
             {% endif %}
         </td>
+        <td>{{ user.is_active }}</td>
+        <td>
+            {% if user.is_active %}
+            <h4>Active</h4>
+            {% else %}
+            <h4>Deactive</h4>
+            {% endif %}
+        </td>
+        <td>
+            <button class="btn btn-outline-secondary"><a href="{% url 'update_user_profile_view' user.id %}">edit</a></button>
+        </td>
     </tr>
+    {% empty %}
+     <tr>
+        <h1 colspan="6">No Users !</h1>
+     </tr>
      {% endfor %}
+    
 </table>
 
 <br>

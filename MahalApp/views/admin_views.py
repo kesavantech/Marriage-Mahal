@@ -128,3 +128,23 @@ def users_view(request):
         "users":users
     }
     return render(request, "admin/users.html", context)
+
+@login_required
+def update_user_profile_view(request, user_id):
+    if not request.user.is_superuser:
+        messages.error(request,"Access Denied !")
+        return redirect("login")
+    user = User.objects.get(id=user_id)
+
+    if request.method == "POST":
+        user.username = request.POST.get("username")
+        
+        user.email = request.POST.get("email")
+        print(f"[DEBUG]:Username: {user.username} | Email: {user.email}")
+        user.save()
+        messages.success(request,"Updated Successfully !")
+        return redirect("users")
+    context = {
+        "user":user
+    }
+    return render(request, "admin/edit_user_profile.html", context)
