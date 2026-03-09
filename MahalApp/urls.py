@@ -22,12 +22,13 @@ urlpatterns=[
     path('footer/',views.footer_view, name='footer'),
 
     ######    ADMIN URL   ##################
+    path("admin_base_view/", views.admin_base_view, name="admin_base_view"),
     path('Partials/',views.PartialsView, name='Partials'),
     path('home_slider/', views.home_slider_view, name='home_slider'),
     path('home_banner/', views.home_banner_view, name='home_banner'),
     path("users/", views.users_view, name='users'),
     path("update_user_profile/<int:user_id>/", views.update_user_profile_view, name="update_user_profile_view"),
-
+    
 ]
 
 

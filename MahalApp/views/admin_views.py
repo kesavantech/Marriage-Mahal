@@ -148,3 +148,7 @@ def update_user_profile_view(request, user_id):
         "user":user
     }
     return render(request, "admin/edit_user_profile.html", context)
+
+
+def admin_base_view(request):
+    return render(request,"admin/admin_base.html")

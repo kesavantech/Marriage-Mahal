@@ -1,77 +1,146 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container">
-    <div class="row">
+<div class="container-fluid">
+<div class="row">
 
-        <!-- LEFT SIDE MAIN DASHBOARD -->
-        <div class="col-md-9 mt-0" >
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="ms-0">
-                        <i class="fas fa-tachometer-alt me-2"></i>
-                        Welcome, {{ user.username }}!
-                    </h4>
-                    <small>Role: {{ user.role|title }}</small>
-                </div>
+<!-- SIDEBAR -->
+<div class="col-md-2 bg-dark text-white vh-100 p-3">
 
-                <div class="card-body">
+    <h4 class="text-center mb-4">
+        <i class="fas fa-feather-alt"></i> BirdyBazaar
+    </h4>
 
-                    {% if user.role == 'admin' %}
-                        <h5 class="text-primary">
-                            <i class="fas fa-user-shield me-2"></i>
-                            Admin Dashboard
-                        </h5>
-                        <p>Welcome to admin panel. Use the right menu to manage homepage.</p>
+    <ul class="nav flex-column">
 
-                    {% elif user.role == 'client' %}
-                        <h5 class="text-success">
-                            <i class="fas fa-user me-2"></i>
-                            Client Dashboard
-                        </h5>
+        <li class="nav-item mb-2">
+            <a href="#" class="nav-link text-white">
+                <i class="fas fa-home me-2"></i> Dashboard
+            </a>
+        </li>
 
-                    {% else %}
-                        <h5 class="text-warning">
-                            <i class="fas fa-user-tie me-2"></i>
-                            Manager Dashboard
-                        </h5>
-
-                    {% endif %}
-
-                </div>
-            </div>
-        </div>
-
-
-        <!-- RIGHT SIDE NAVIGATION -->
         {% if user.role == 'admin' %}
-        <div class="col-md-3">
 
-            <div class="card shadow-sm">
-                <div class="card-header bg-dark text-white">
-                    Navigation
-                </div>
+        <li class="nav-item mb-2">
+            <a href="{% url 'home_slider' %}" class="nav-link text-white">
+                <i class="fas fa-sliders-h me-2"></i> Home Slider
+            </a>
+        </li>
 
-                <div class="list-group list-group-flush">
+        <li class="nav-item mb-2">
+            <a href="{% url 'home_banner' %}" class="nav-link text-white">
+                <i class="fas fa-image me-2"></i> Home Banner
+            </a>
+        </li>
 
-                    <a href="{% url 'home_slider' %}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-sliders-h me-2"></i>
-                        Home Slider
-                    </a>
-
-                    <a href="{% url 'home_banner' %}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-image me-2"></i>
-                        Home Banner
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
         {% endif %}
 
+        {% if user.role == 'client' %}
+        <li class="nav-item mb-2">
+            <a href="#" class="nav-link text-white">
+                <i class="fas fa-image me-2"></i> Client Banner
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a href="#" class="nav-link text-white">
+                <i class="fas fa-image me-2"></i> ClientAccount
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a href="#" class="nav-link text-white">
+                <i class="fas fa-image me-2"></i> ClientWork
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a href="#" class="nav-link text-white">
+                <i class="fas fa-image me-2"></i> ClientProfile
+            </a>
+        </li>
+        {% endif %}
+
+    </ul>
+
+</div>
+
+
+<!-- MAIN CONTENT -->
+<div class="col-md-10 p-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h3>
+            <i class="fas fa-tachometer-alt me-2"></i>
+            Dashboard
+        </h3>
+
+        <div>
+            Welcome <b>{{ user.username }}</b>
+        </div>
+
     </div>
+
+
+    <!-- ROLE MESSAGE -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+        {% if user.role == 'admin' %}
+            <h5 class="text-primary">
+                <i class="fas fa-user-shield me-2"></i>
+                Admin Dashboard
+            </h5>
+            <p>Manage website content and homepage sections.</p>
+               <!-- DASHBOARD CARDS -->
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center p-3">
+                <i class="fas fa-users fa-2x text-primary"></i>
+                <h4 class="mt-2">120</h4>
+                <p>Total Users</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center p-3">
+                <i class="fas fa-shopping-cart fa-2x text-success"></i>
+                <h4 class="mt-2">85</h4>
+                <p>Orders</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center p-3">
+                <i class="fas fa-chart-line fa-2x text-danger"></i>
+                <h4 class="mt-2">$2500</h4>
+                <p>Revenue</p>
+            </div>
+        </div>
+
+    </div>
+        {% elif user.role == 'client' %}
+            <h5 class="text-success">
+                <i class="fas fa-user me-2"></i>
+                Client Dashboard
+            </h5>
+
+        {% else %}
+            <h5 class="text-warning">
+                <i class="fas fa-user-tie me-2"></i>
+                Manager Dashboard
+            </h5>
+        {% endif %}
+
+        </div>
+    </div>
+
+
+ 
+
+</div>
+
+</div>
 </div>
 
 {% endblock %}
