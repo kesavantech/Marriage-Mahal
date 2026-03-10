@@ -16,7 +16,6 @@ urlpatterns=[
     path("whatsapp/", views.whatsapp_greet, name="whatsapp_greet"),
     path('logout/', views.logout_view, name='logout'),
 
-
     #partials
     path('header/',views.header_view, name='header'),
     path('footer/',views.footer_view, name='footer'),
@@ -27,7 +26,7 @@ urlpatterns=[
     path('home_slider/', views.home_slider_view, name='home_slider'),
     path('home_banner/', views.home_banner_view, name='home_banner'),
     path("users/", views.users_view, name='users'),
-    path("update_user_profile/<int:user_id>/", views.update_user_profile_view, name="update_user_profile_view"),
+    path("change_action/<int:user_id>/",views.change_action,name="change_action"),
     
 ]
 

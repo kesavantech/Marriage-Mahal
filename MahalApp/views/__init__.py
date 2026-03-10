@@ -14,8 +14,9 @@ from .common_views import (
     profile_view,
     
 )
+
 # Import admin views
 from .admin_views import (
-    PartialsView, home_slider_view,home_banner_view, users_view, update_user_profile_view,
-    admin_base_view
+    PartialsView, home_slider_view, home_banner_view, users_view, update_user_profile_view,
+    admin_base_view, change_action
 )

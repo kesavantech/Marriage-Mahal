@@ -101,8 +101,13 @@ def login_view(request):
 def dashboard_view(request):
     if request.user.role == 'admin':
         all_users = User.objects.all()
-        return render(request, 'dashboard.html', {'all_users': all_users})
-    return render(request, 'dashboard.html')
+        total_users = User.objects.all().count()
+        context={
+            "all_users":all_users,
+            "total_users":total_users
+            }
+    return render(request, 'dashboard.html',context)
+    
 
 @login_required
 def profile_view(request):

@@ -152,3 +152,15 @@ def update_user_profile_view(request, user_id):
 
 def admin_base_view(request):
     return render(request,"admin/admin_base.html")
+
+def change_action(request, user_id):
+    if request.method == 'POST':
+        user = User.objects.get(id=user_id)
+        status = request.POST.get("status")
+
+        if status == "True":
+            user.is_active=True
+        else:
+            user.is_active = False
+        user.save()
+    return redirect("dashboard")

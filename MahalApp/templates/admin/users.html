@@ -1,5 +1,5 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'admin/admin_base.html' %}
+{% block admin_content %}
 
 <style>
     table {
@@ -31,7 +31,6 @@
         <th>role</th>
         <th>Address</th>
         <th>Profile</th>
-        <th>Update</th>
         <th>Status</th>
         <th>Action</th>
     </tr>
@@ -49,16 +48,26 @@
             <p style="text-shadow: #000;">User Don't Have Profile !</p>
             {% endif %}
         </td>
-        <td>{{ user.is_active }}</td>
+       
         <td>
             {% if user.is_active %}
-            <h4>Active</h4>
+            <h5>Active</h5>
             {% else %}
-            <h4>Deactive</h4>
+            <h5>Deactive</h5>
             {% endif %}
         </td>
         <td>
-            <button class="btn btn-outline-secondary"><a href="{% url 'update_user_profile_view' user.id %}">edit</a></button>
+            <form action="{% url 'change_action' user.id %}" method="POST">
+                {% csrf_token %}
+                <select name="status">
+
+                <option value="True" {% if user.is_active %}selected{% endif %}>Active</option>
+
+                <option value="False" {% if not user.is_active %}selected{% endif %}>Deactive</option>
+
+                </select>
+                <button type="submit">Changes</button>
+            </form>
         </td>
     </tr>
     {% empty %}
