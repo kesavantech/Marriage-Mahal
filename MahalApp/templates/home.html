@@ -5,9 +5,67 @@
 
 {% block content %}
 
+<style>
+
+.carousel-item{
+position:relative;
+}
+
+.carousel-item img{
+height:100vh;
+object-fit:cover;
+}
+
+/* Dark overlay */
+
+.carousel-item::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.45);
+z-index:1;
+}
+
+/* HERO TEXT */
+
+.hero-text{
+position:absolute;
+top:50%;
+left:0;
+right:0;
+transform:translateY(-50%);
+color:white;
+z-index:2;
+padding-left:80px;
+padding-right:80px;
+}
+
+/* TITLE */
+
+.hero-title{
+font-size:60px;
+font-weight:700;
+line-height:1.2;
+max-width:100%;
+}
+
+/* SUBTITLE */
+
+.hero-subtitle{
+font-size:24px;
+margin-top:15px;
+opacity:0.9;
+}
+
+</style>
+
+
 <div id="homeCarousel" class="carousel slide carousel-fade"
      data-bs-ride="carousel"
-     data-bs-interval="2000"
+     data-bs-interval="6000"
      data-bs-pause="True">
 
 
@@ -22,20 +80,40 @@
         </button>
         {% endfor %}
     </div>
+<div id="homeCarousel" class="carousel slide carousel-fade"
+     data-bs-ride="carousel"
+     data-bs-interval="4000">
+
+<!-- Indicators -->
+<div class="carousel-indicators">
+    {% for banner in home_banner %}
+    <button type="button"
+            data-bs-target="#homeCarousel"
+            data-bs-slide-to="{{ forloop.counter0 }}"
+            class="{% if forloop.first %}active{% endif %}">
+    </button>
+    {% endfor %}
+</div>
 
 <div class="carousel-inner">
-    {% for banner in home_banner %}
-    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-        <img src="{{ banner.image.url }}"
-             class="d-block w-100"
-             style="height:100vh; object-fit:cover;">
 
-        <div class="carousel-caption">
-            <h2>{{ banner.title }}</h2>
-            <p>{{ banner.subtitle }}</p>
-        </div>
-    </div>
-    {% endfor %}
+{% for banner in home_banner %}
+
+<div class="carousel-item {% if forloop.first %}active{% endif %} hero-slide">
+
+<img src="{{ banner.image.url }}"
+     class="d-block w-100 hero-image">
+
+<div class="hero-text container-fluid px-5">
+    <h5 class="hero-title">{{ banner.title }}</h5>
+    <p class="hero-subtitle">{{ banner.subtitle }}</p>
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
 </div>
 
 </div>
