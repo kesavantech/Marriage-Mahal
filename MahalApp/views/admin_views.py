@@ -163,4 +163,4 @@ def change_action(request, user_id):
         else:
             user.is_active = False
         user.save()
-    return redirect("dashboard")
+    return redirect("users")
