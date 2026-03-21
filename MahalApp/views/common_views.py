@@ -64,7 +64,6 @@ def register_view(request):
         if User.objects.filter(phone=phone).exists():
             messages.error(request,'phone number is already exist!')
             return redirect('register')
-
         User.objects.create_user(
             username=username, email=email, phone=phone, role=role, address=address,
             password=password1, profile = profile
@@ -99,13 +98,14 @@ def login_view(request):
 
 @login_required
 def dashboard_view(request):
-    if request.user.role == 'admin':
+    if request.user.role in ['admin', 'manager']:
         all_users = User.objects.all()
         total_users = User.objects.all().count()
         context={
             "all_users":all_users,
             "total_users":total_users
             }
+    
     return render(request, 'dashboard.html',context)
     
 

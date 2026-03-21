@@ -164,3 +164,42 @@ def change_action(request, user_id):
             user.is_active = False
         user.save()
     return redirect("users")
+
+def add_manager_view(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        phone = request.POST.get("phone")
+        role = request.POST.get("role")
+        address = request.POST.get("address")
+        password = request.POST.get("password")
+        password1 = request.POST.get("password1")
+        profile = None
+
+        if request.FILES.get("profile"):
+            profile = request.FILES.get("profile")
+
+        if User.objects.filter(email = email).exists():
+            messages.error(request,"Email Already Exist !")
+            return redirect("add_manager")
+        
+        if User.objects.filter(phone = phone).exists():
+            messages.error(request, "Phone Number Already Exists !")
+            return redirect("add_manager")
+        
+        if password != password1:
+            messages.error(request,"Password and Cnfirm Password Not Match !")
+            return redirect("add_manager")
+        if len(phone) != 10:
+            messages.error(request,"Phone number must be 10 numbers !")
+            return redirect("add_manager")
+
+        User.objects.create_user(
+            username = username, email = email, phone = phone,
+            role = role, address = address, password = password1,
+            profile = profile
+        )
+        messages.success(request, "Manager Added Successfully !")
+        return redirect("dashboard")
+
+    return render(request, "admin/add_manager.html")

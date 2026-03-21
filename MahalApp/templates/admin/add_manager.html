@@ -1,6 +1,8 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends "admin/admin_base.html" %}
 
+{% block admin_content %}
+
+<h1>Add Manager Page </h1>
 <h1>This IS Register Page!</h1>
 
 <div class="container">
@@ -23,7 +25,7 @@
 
             <label>Role</label><br>
             <select name="role">
-                <option value="client">Client</option>
+                <option value="manager">Manager</option>
             </select><br><br>
 
             <label>Address</label><br>

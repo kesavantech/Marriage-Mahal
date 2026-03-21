@@ -30,6 +30,7 @@ urlpatterns=[
     path('home_banner/', views.home_banner_view, name='home_banner'),
     path("users/", views.users_view, name='users'),
     path("change_action/<int:user_id>/",views.change_action,name="change_action"),
+    path("add_manager/",views.add_manager_view, name="add_manager"),
     
 ]
 
