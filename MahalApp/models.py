@@ -86,3 +86,73 @@ class HomeBanner(models.Model):
     def __str__(self):
         return f"Banner {self.id}"
 
+class Booking(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    hall_choices = (
+        ("Normal", "Normal"),
+        ("AC", "AC"),
+    )
+    hall_type = models.CharField(max_length=100, choices=hall_choices, default='Normal')
+
+    event_choices = (
+        ("Engagement", "Engagement"),
+        ("Marriage", "Marriage"),
+        ("Baby Shower", "Baby Shower"),
+        ("Ear Piercing", "Ear Piercing"),
+        ("Birthday", "Birthday"),
+        ("Baby Shower", "Baby Shower"),
+        ("Conference", "Conference"),
+        ("Political Event", "Political Event"),
+        ("School Event", "School Event"),
+        ("Awareness Event", "Awareness Event"),
+        ("Others", "Others"),
+    )
+    event_type = models.CharField(max_length=100, choices=event_choices, default='Engagement')
+    event_date = models.DateField()
+    guest_count = models.IntegerField(default=1)
+    special_requests = models.TextField(blank=True, null=True)
+
+    EVENT_PRICES = {
+        "Engagement": 70000,
+        "Marriage": 85000,
+        "Ear Piercing": 60000,
+        "Birthday": 35000,
+        "Baby Shower": 40000,
+        "Conference": 50000,
+        "Political Event": 50000,
+        "School Event": 30000,
+        "Awareness Event": 30000,
+        "Others": 25000,
+    }
+    AC_EXTRA = 10000
+
+    status_choices = (
+        ("Pending", "Pending"),
+        ("Confirmed", "Confirmed"),
+        ("Rejected", "Rejected"),
+        ("Cancelled", "Cancelled"),
+    )
+    status = models.CharField(max_length=20, choices=status_choices, default='Pending')
+
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    advance_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    advance_paid = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        base_price = self.EVENT_PRICES.get(self.event_type, 25000)
+        if self.hall_type == "AC":
+            base_price += self.AC_EXTRA
+        self.total_amount = base_price
+        self.advance_amount = round(base_price * 0.15, 2)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.event_type} on {self.event_date}"
+
+
+
+
+    
