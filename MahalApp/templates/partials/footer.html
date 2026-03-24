@@ -1,42 +1,91 @@
 {% load static %}
-<footer class="text-white pt-5 pb-4" style="background-color: {{ Home.bg_color|default:'#333333' }}; color: {{ Home.font_color|default:'#ffffff' }};">
-  <div class="container text-md-left">
-    <div class="row">
 
-      <div class="col-md-4 mb-4">
-        <h5 class="fw-bold">Muthukumaran Mahal</h5>
-        <p>
+{% with bg=Home.bg_color|default:'#1a1a2e' fc=Home.font_color|default:'#ffffff' fs=Home.font_size|default:'16' ff=Home.font_family|default:'Poppins' %}
+
+<footer style="background-color: {{ bg }}; color: {{ fc }}; font-family: '{{ ff }}', sans-serif; font-size: {{ fs }}px;">
+  <div class="container py-5">
+    <div class="row gy-4">
+
+      <!-- Brand -->
+      <div class="col-md-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          {% if Home.logo %}
+            <img src="{{ Home.logo.url }}" alt="logo" height="44"
+                 style="border-radius: {{ Home.logo_radius|default:'40' }}px; object-fit:cover;">
+          {% endif %}
+          <span style="font-weight:700; font-size:calc({{ fs }}px + 2px); color:{{ fc }};">
+            {{ Home.mahal_name|default:"Muthukumaran Mahal" }}
+          </span>
+        </div>
+        <p style="opacity:0.75; line-height:1.7;">
           The perfect venue for weddings, engagements, birthday parties, corporate events, and more.
         </p>
+        <div class="d-flex gap-3 mt-3">
+          <a href="#" style="color:{{ fc }}; font-size:20px; opacity:0.85; transition:opacity .2s;"
+             onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://wa.me/{{ Home.whatsapp_no }}" target="_blank"
+             style="color:{{ fc }}; font-size:20px; opacity:0.85; transition:opacity .2s;"
+             onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+        </div>
       </div>
 
-      <div class="col-md-3 mb-4">
-        <h5 class="fw-bold">Contact</h5>
-        <p><i class="fab fa-whatsapp me-2"></i>{{ Home.whatsapp_no|default:'N/A' }}</p>
-        <p><i class="fas fa-phone-alt me-2"></i>{{ Home.phone|default:'N/A' }}</p>
-        <p><i class="fas fa-envelope me-2"></i>{{ Home.gmail|default:'N/A' }}</p>
+      <!-- Quick Links -->
+      <div class="col-md-2 offset-md-1">
+        <h6 style="font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:16px; color:{{ fc }};">
+          Quick Links
+        </h6>
+        <ul class="list-unstyled" style="line-height:2;">
+          <li><a href="{% url 'home' %}" style="color:{{ fc }}; opacity:0.75; text-decoration:none;"
+                 onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.75">Home</a></li>
+          <li><a href="{% url 'about' %}" style="color:{{ fc }}; opacity:0.75; text-decoration:none;"
+                 onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.75">About</a></li>
+          <li><a href="{% url 'special' %}" style="color:{{ fc }}; opacity:0.75; text-decoration:none;"
+                 onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.75">Specials</a></li>
+          <li><a href="{% url 'contact' %}" style="color:{{ fc }}; opacity:0.75; text-decoration:none;"
+                 onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.75">Contact</a></li>
+        </ul>
       </div>
 
-      <div class="col-md-5 mb-4">
-        <h5 class="fw-bold">Location</h5>
-        <p><i class="fas fa-map-marker-alt me-2"></i>Muthukumaran Mahal, Peruntholuvu, Tirupur</p>
-        <a href="https://www.google.com/maps/dir/?api=1&destination=11.0483951,77.4315152"
-           class="text-white text-decoration-none" target="_blank">View on Google Maps</a>
+      <!-- Contact -->
+      <div class="col-md-4 offset-md-1">
+        <h6 style="font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:16px; color:{{ fc }};">
+          Contact Us
+        </h6>
+        <ul class="list-unstyled" style="line-height:2.2; opacity:0.85;">
+          {% if Home.whatsapp_no %}
+          <li><i class="fab fa-whatsapp me-2"></i>{{ Home.whatsapp_no }}</li>
+          {% endif %}
+          {% if Home.phone %}
+          <li><i class="fas fa-phone-alt me-2"></i>{{ Home.phone }}</li>
+          {% endif %}
+          {% if Home.gmail %}
+          <li><i class="fas fa-envelope me-2"></i>{{ Home.gmail }}</li>
+          {% endif %}
+          <li>
+            <i class="fas fa-map-marker-alt me-2"></i>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=11.0483951,77.4315152"
+               target="_blank" style="color:{{ fc }}; text-decoration:none; opacity:0.85;"
+               onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85">
+              Peruntholuvu, Tirupur
+            </a>
+          </li>
+        </ul>
       </div>
+
     </div>
 
-    <hr style="opacity:.2">
+    <hr style="border-color:{{ fc }}; opacity:0.15; margin-top:32px;">
 
-    <div class="row align-items-center">
-      <div class="col-md-6">
-        <h6>Follow Us:</h6>
-        <a href="#" class="text-white fs-4 me-3"><i class="fab fa-instagram"></i></a>
-        <a href="#" class="text-white fs-4 me-3"><i class="fab fa-whatsapp"></i></a>
-      </div>
-
-      <div class="col-md-6 text-md-end mt-3 mt-md-0">
-        <p class="mb-0">&copy; 2025 Muthukumaran Mahal. All Rights Reserved.</p>
-      </div>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-2"
+         style="opacity:0.65; font-size:calc({{ fs }}px - 2px);">
+      <span>&copy; 2025 {{ Home.mahal_name|default:"Muthukumaran Mahal" }}. All Rights Reserved.</span>
+      <span class="mt-2 mt-md-0">Designed with <i class="fas fa-heart" style="color:#e74c3c;"></i> for you</span>
     </div>
   </div>
 </footer>
+
+{% endwith %}

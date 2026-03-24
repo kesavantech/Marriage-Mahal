@@ -1,43 +1,89 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg py-0" style="background-color: {{ Home.bg_color|default:'#ffffff' }}">
+
+{% with bg=Home.bg_color|default:'#1a1a2e' fc=Home.font_color|default:'#ffffff' fs=Home.font_size|default:'16' ff=Home.font_family|default:'Poppins' %}
+
+<style>
+  #mainNavbar {
+    background-color: {{ bg }} !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    font-family: '{{ ff }}', sans-serif;
+    font-size: {{ fs }}px;
+  }
+  #mainNavbar .nav-link {
+    color: {{ fc }} !important;
+    font-size: {{ fs }}px;
+    font-family: '{{ ff }}', sans-serif;
+    padding: 8px 14px;
+    position: relative;
+    transition: opacity 0.2s;
+  }
+  #mainNavbar .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 2px; left: 14px; right: 14px;
+    height: 2px;
+    background: {{ fc }};
+    opacity: 0;
+    border-radius: 2px;
+    transition: opacity 0.2s;
+  }
+  #mainNavbar .nav-link:hover { opacity: 0.75; }
+  #mainNavbar .nav-link:hover::after { opacity: 0.5; }
+  #mainNavbar .navbar-toggler { border-color: {{ fc }}; }
+  #mainNavbar .navbar-toggler-icon {
+    filter: invert(1);
+  }
+  #mainNavbar .brand-name {
+    color: {{ fc }};
+    font-size: {{ fs }}px;
+    font-family: '{{ ff }}', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+</style>
+
+<nav id="mainNavbar" class="navbar navbar-expand-lg py-2 sticky-top">
   <div class="container">
 
-    <a class="navbar-brand" href="{% url 'home' %}">
-        {% if Home.logo %}
-        <img src="{{ Home.logo.url }}" alt="logo-image" width="100" style="border-radius: {{ Home.logo_radius|default:'40' }}px">
-        {% else %}
-        <span>No Logo</span>
-        {% endif %}
-        <span 
-        style="font-size: {{ Home.font_size|default:'16' }}px; 
-        color: {{ Home.font_color|default:'#000000' }}; 
-        font-family: '{{ Home.font_family|default:"Arial" }}', serif, sans-serif;">
-        {{ Home.mahal_name | default:"MuthuKumaran Mahal" }}</span>
+    <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+      {% if Home.logo %}
+        <img src="{{ Home.logo.url }}" alt="logo" height="48"
+             style="border-radius: {{ Home.logo_radius|default:'40' }}px; object-fit:cover;">
+      {% endif %}
+      <span class="brand-name">{{ Home.mahal_name|default:"MuthuKumaran Mahal" }}</span>
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-        <span class="navbar-toggler-icon"></span>
+      <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="mainNav">
-        <ul class="navbar-nav ms-auto">
-            
-            {% if user.is_authenticated %}
-                <li class="nav-item"><a class="nav-link" style="color: {{ Home.font_color|default:'#000000' }}; font-size: {{ Home.font_size|default:'16' }}px;" href="{% url 'home' %}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" style="color: {{ Home.font_color|default:'#000000' }}; font-size: {{ Home.font_size|default:'16' }}px;" href="{% url 'dashboard' %}">Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" style="color: {{ Home.font_color|default:'#000000' }}; font-size: {{ Home.font_size|default:'16' }}px;" href="{% url 'profile' %}">Profile</a></li>
-                <li class="nav-item"><a class="nav-link" style="color: {{ Home.font_color|default:'#000000' }}; font-size: {{ Home.font_size|default:'16' }}px;" href="{% url 'logout' %}" onclick="return confirm('Are You Sure Logout !')">Logout</a></li>
-            {% else %}
-                <li class="nav-item"><a class="nav-link" style="color: {{ Home.font_color|default:'#000000' }}; font-size: {{ Home.font_size|default:'16' }}px;" href="{% url 'home' %}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" style="color: {{ Home.font_color|default:'#000000' }}; font-size: {{ Home.font_size|default:'16' }}px;" href="{% url 'about' %}">About</a></li>
-                <li class="nav-item"><a class="nav-link" style="color: {{ Home.font_color|default:'#000000' }}; font-size: {{ Home.font_size|default:'16' }}px;" href="{% url 'special' %}">Specials</a></li>
-                <li class="nav-item"><a class="nav-link" style="color: {{ Home.font_color|default:'#000000' }}; font-size: {{ Home.font_size|default:'16' }}px;" href="{% url 'contact' %}">Contact</a></li>
-                <li class="nav-item"><a class="nav-link" style="color: {{ Home.font_color|default:'#000000' }}; font-size: {{ Home.font_size|default:'16' }}px;" href="{% url 'login' %}">Login</a></li>
-                <li class="nav-item"><a class="nav-link" style="color: {{ Home.font_color|default:'#000000' }}; font-size: {{ Home.font_size|default:'16' }}px;" href="{% url 'register' %}">Register</a></li>
-            {% endif %}
+      <ul class="navbar-nav ms-auto align-items-lg-center">
 
-        </ul>
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}" onclick="return confirm('Are you sure you want to logout?')">Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'special' %}">Specials</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+          <li class="nav-item ms-lg-2">
+            <a class="nav-link px-3 py-1 rounded"
+               style="border: 1px solid {{ fc }}; font-size:{{ fs }}px;"
+               href="{% url 'register' %}">Register</a>
+          </li>
+        {% endif %}
+
+      </ul>
     </div>
 
   </div>
 </nav>
+
+{% endwith %}

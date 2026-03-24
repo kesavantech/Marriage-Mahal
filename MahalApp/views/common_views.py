@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from MahalApp.models import User, HomeBanner, Booking
 from django.contrib.auth.decorators import login_required
-
+from django.db.models import Sum, Min, Max, Avg, Count
 
 def home_view(request):
     from MahalApp.models import HomeSlider
@@ -105,6 +105,19 @@ def dashboard_view(request):
     if request.user.role in ['admin', 'manager']:
         context['all_users'] = User.objects.all()
         context['total_users'] = User.objects.count()
+        context['total_booking'] = Booking.objects.all().count()
+        total_revenue = Booking.objects.aggregate(total=Sum('total_amount'))
+        context['total_revenue'] = total_revenue['total'] or 0
+
+        event_counts = (
+            Booking.objects
+            .values('event_type')
+            .annotate(count=Count('id'))
+            .order_by('-count')
+        )
+        context['event_labels'] = [e['event_type'] for e in event_counts]
+        context['event_data']   = [e['count']      for e in event_counts]
+
     return render(request, 'dashboard.html', context)
 
 
