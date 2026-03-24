@@ -197,11 +197,18 @@ def booking_form_view(request):
         hall_type = request.POST.get('hall_type')
         guest_count = request.POST.get('guest_count')
         special_requests = request.POST.get('special_requests', '')
+        payment_screenshot = request.FILES.get('payment_screenshot')
 
-        # Date conflict check
+        if not payment_screenshot:
+            messages.error(request, 'Please upload your payment screenshot!')
+            return redirect('booking_form')
+
         if Booking.objects.filter(event_date=event_date, status='Confirmed').exists():
             messages.error(request, 'This date is already booked! Please choose another date.')
             return redirect('booking_form')
+
+        if Booking.objects.filter(event_date=event_date, status='Pending').exists():
+            messages.warning(request, 'This date already has a pending booking. You are added to the waiting list. Your advance will be refunded if the date is not available.')
 
         Booking.objects.create(
             user=request.user,
@@ -209,9 +216,10 @@ def booking_form_view(request):
             event_type=event_type,
             hall_type=hall_type,
             guest_count=guest_count,
-            special_requests=special_requests
+            special_requests=special_requests,
+            payment_screenshot=payment_screenshot
         )
-        messages.success(request, 'Booking submitted successfully! We will confirm shortly.')
+        messages.success(request, 'Booking submitted! We will verify your payment and confirm shortly.')
         return redirect('my_bookings')
 
     context = {

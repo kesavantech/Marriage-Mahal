@@ -1,71 +1,307 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'client/client_base.html' %}
+{% block client_content %}
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-7">
+<style>
+    body { background: #f0f2f5; }
 
-            <div class="card shadow">
-                <div class="card-header bg-dark text-white">
-                    <h4 class="mb-0"><i class="fas fa-calendar-check me-2"></i>Book Your Event</h4>
+    .booking-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        overflow: hidden;
+        max-width: 780px;
+        margin: 40px auto;
+    }
+
+    .booking-header {
+        background: linear-gradient(135deg, #1a1a2e, #0f3460);
+        padding: 24px 32px;
+        color: white;
+    }
+
+    .booking-header h5 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 18px;
+    }
+
+    .booking-header p {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: #adb5bd;
+    }
+
+    .booking-body { padding: 32px; }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 5px;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 1.5px solid #dee2e6;
+        font-size: 14px;
+        padding: 10px 14px;
+        transition: border-color 0.2s;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #0f3460;
+        box-shadow: 0 0 0 3px rgba(15,52,96,0.1);
+    }
+
+    .row-fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    /* Price Box */
+    .price-box {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border: 1.5px solid #dee2e6;
+        border-radius: 12px;
+        padding: 18px 22px;
+        margin: 20px 0;
+    }
+
+    .price-box .price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+        color: #495057;
+        padding: 4px 0;
+    }
+
+    .price-box .price-row.advance {
+        border-top: 1.5px dashed #ced4da;
+        margin-top: 8px;
+        padding-top: 10px;
+        font-weight: 700;
+        font-size: 16px;
+        color: #0f3460;
+    }
+
+    .price-box .price-row.advance span:last-child {
+        color: #e2b96f;
+        font-size: 18px;
+    }
+
+    /* UPI Section */
+    .upi-box {
+        background: #fff8ee;
+        border: 1.5px solid #e2b96f;
+        border-radius: 12px;
+        padding: 20px 22px;
+        margin-bottom: 20px;
+    }
+
+    .upi-box h6 {
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 12px;
+        font-size: 14px;
+    }
+
+    .upi-detail {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+
+    .upi-detail i { color: #e2b96f; width: 16px; }
+
+    .upi-id-badge {
+        background: #1a1a2e;
+        color: #e2b96f;
+        font-family: monospace;
+        font-size: 14px;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 6px;
+        letter-spacing: 1px;
+        display: inline-block;
+        margin-top: 4px;
+    }
+
+    .upi-note {
+        font-size: 12px;
+        color: #6c757d;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px dashed #e2b96f;
+    }
+
+    /* Screenshot Upload */
+    .screenshot-upload-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1.5px dashed #ced4da;
+        border-radius: 8px;
+        padding: 12px 16px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #6c757d;
+        transition: border-color 0.2s;
+    }
+
+    .screenshot-upload-label:hover {
+        border-color: #0f3460;
+        color: #0f3460;
+    }
+
+    .screenshot-upload-label i { font-size: 20px; color: #e2b96f; }
+
+    #payment_screenshot { display: none; }
+
+    #screenshot-preview {
+        display: none;
+        margin-top: 10px;
+        border-radius: 8px;
+        max-height: 180px;
+        border: 1.5px solid #dee2e6;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #1a1a2e, #0f3460);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .btn-submit:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        color: white;
+    }
+
+    @media (max-width: 576px) {
+        .row-fields { grid-template-columns: 1fr; }
+        .booking-body { padding: 20px; }
+    }
+</style>
+
+<div class="container">
+<div class="booking-card">
+
+    <div class="booking-header">
+        <h5><i class="fas fa-calendar-check me-2"></i>Book Your Event</h5>
+        <p>Fill in the details and pay the advance to confirm your booking</p>
+    </div>
+
+    <div class="booking-body">
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row-fields mb-3">
+                <div>
+                    <label class="form-label">Event Type</label>
+                    <select name="event_type" id="event_type" class="form-select" required>
+                        {% for value, label in event_choices %}
+                            <option value="{{ value }}">{{ value }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <div class="card-body p-4">
-
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                    {% endfor %}
-
-                    <form method="POST">
-                        {% csrf_token %}
-
-                        <div class="mb-3">
-                            <label class="form-label">Event Type</label>
-                            <select name="event_type" id="event_type" class="form-select" required>
-                                {% for value, label in event_choices %}
-                                    <option value="{{ value }}">{{ value }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Hall Type</label>
-                            <select name="hall_type" id="hall_type" class="form-select" required>
-                                {% for value, label in hall_choices %}
-                                    <option value="{{ value }}">{{ value }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Event Date</label>
-                            <input type="date" name="event_date" class="form-control" required
-                                   min="{{ today }}">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Guest Count</label>
-                            <input type="number" name="guest_count" class="form-control" min="1" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Special Requests (optional)</label>
-                            <textarea name="special_requests" class="form-control" rows="3"></textarea>
-                        </div>
-
-                        <!-- Price Preview -->
-                        <div class="alert alert-info">
-                            <strong>Total Amount:</strong> ₹<span id="total_price">0</span><br>
-                            <strong>Advance (15%):</strong> ₹<span id="advance_price">0</span>
-                        </div>
-
-                        <button type="submit" class="btn btn-dark w-100">Submit Booking</button>
-                    </form>
-
+                <div>
+                    <label class="form-label">Hall Type</label>
+                    <select name="hall_type" id="hall_type" class="form-select" required>
+                        {% for value, label in hall_choices %}
+                            <option value="{{ value }}">{{ value }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
 
-        </div>
+            <div class="row-fields mb-3">
+                <div>
+                    <label class="form-label">Event Date</label>
+                    <input type="date" name="event_date" class="form-control" required min="{{ today }}">
+                </div>
+                <div>
+                    <label class="form-label">Guest Count</label>
+                    <input type="number" name="guest_count" class="form-control" min="1" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Special Requests <span class="text-muted">(optional)</span></label>
+                <textarea name="special_requests" class="form-control" rows="2" placeholder="Any special arrangements..."></textarea>
+            </div>
+
+            <!-- PRICE PREVIEW -->
+            <div class="price-box">
+                <div class="price-row">
+                    <span>Base Price</span>
+                    <span>₹<span id="base_price">0</span></span>
+                </div>
+                <div class="price-row">
+                    <span>AC Extra</span>
+                    <span id="ac_extra_row">—</span>
+                </div>
+                <div class="price-row">
+                    <span>Total Amount</span>
+                    <span>₹<span id="total_price">0</span></span>
+                </div>
+                <div class="price-row advance">
+                    <span><i class="fas fa-bolt me-1"></i> Advance to Pay (15%)</span>
+                    <span>₹<span id="advance_price">0</span></span>
+                </div>
+            </div>
+
+            <!-- UPI PAYMENT DETAILS -->
+            <div class="upi-box">
+                <h6><i class="fas fa-mobile-alt me-2"></i>Pay Advance via UPI</h6>
+                <div class="upi-detail">
+                    <i class="fas fa-user"></i>
+                    <span>Account Name: <strong>Muthukumaran Mahal</strong></span>
+                </div>
+                <div class="upi-detail">
+                    <i class="fas fa-university"></i>
+                    <span>Bank: <strong>Union Bank</strong></span>
+                </div>
+                <div class="upi-detail">
+                    <i class="fas fa-qrcode"></i>
+                    <span>Gpay Number: <strong>9342532503</strong> </span>
+                </div>
+                <div class="upi-id-badge">muthukumaranmahal@union</div>
+                <p class="upi-note">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Pay ₹<span id="advance_note">0</span> via GPay / PhonePe / Paytm using the UPI ID above,
+                    then upload the payment screenshot below.
+                </p>
+            </div>
+
+            <!-- SCREENSHOT UPLOAD -->
+            <div class="mb-4">
+                <label class="form-label">Payment Screenshot <span class="text-danger">*</span></label>
+                <label class="screenshot-upload-label" for="payment_screenshot">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span id="screenshot-name">Click to upload payment screenshot</span>
+                </label>
+                <input type="file" name="payment_screenshot" id="payment_screenshot" accept="image/*">
+                <img id="screenshot-preview" src="" alt="Payment Screenshot Preview">
+            </div>
+
+            <button type="submit" class="btn btn-submit w-100">
+                <i class="fas fa-paper-plane me-2"></i>Submit Booking
+            </button>
+
+        </form>
     </div>
+</div>
 </div>
 
 <script>
@@ -76,15 +312,35 @@
         const event = document.getElementById('event_type').value;
         const hall = document.getElementById('hall_type').value;
         let base = eventPrices[event] || 25000;
-        if (hall === 'AC') base += acExtra;
-        const advance = Math.round(base * 0.15);
-        document.getElementById('total_price').innerText = base.toLocaleString('en-IN');
+        let total = base;
+        if (hall === 'AC') total += acExtra;
+        const advance = Math.round(total * 0.15);
+
+        document.getElementById('base_price').innerText = base.toLocaleString('en-IN');
+        document.getElementById('ac_extra_row').innerText = hall === 'AC' ? '₹' + acExtra.toLocaleString('en-IN') : '—';
+        document.getElementById('total_price').innerText = total.toLocaleString('en-IN');
         document.getElementById('advance_price').innerText = advance.toLocaleString('en-IN');
+        document.getElementById('advance_note').innerText = advance.toLocaleString('en-IN');
     }
 
     document.getElementById('event_type').addEventListener('change', updatePrice);
     document.getElementById('hall_type').addEventListener('change', updatePrice);
     updatePrice();
+
+    // Screenshot preview
+    document.getElementById('payment_screenshot').addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            document.getElementById('screenshot-name').textContent = file.name;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const preview = document.getElementById('screenshot-preview');
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 </script>
 
 {% endblock %}

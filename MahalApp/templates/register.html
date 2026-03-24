@@ -255,14 +255,6 @@
             <h4>Create Your Account</h4>
             <p class="subtitle">Fill in the details below to get started</p>
 
-            {% if messages %}
-                {% for m in messages %}
-                <div class="alert alert-danger d-flex align-items-center gap-2 py-2 px-3 mb-3" style="font-size:13px; border-radius:8px;">
-                    <i class="fas fa-exclamation-circle"></i> {{ m }}
-                </div>
-                {% endfor %}
-            {% endif %}
-
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 

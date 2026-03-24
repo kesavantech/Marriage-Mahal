@@ -1,47 +1,234 @@
 {% extends "admin/admin_base.html" %}
-
 {% block admin_content %}
 
-<h1>Add Manager Page </h1>
-<h1>This IS Register Page!</h1>
+<style>
+    .manager-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        overflow: hidden;
+        max-width: 780px;
+    }
 
-<div class="container">
-    <div style="background-color:red; padding:20px;">
+    .manager-card-header {
+        background: linear-gradient(135deg, #1a1a2e, #0f3460);
+        padding: 24px 32px;
+        color: white;
+    }
+
+    .manager-card-header h5 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 18px;
+        letter-spacing: 0.5px;
+    }
+
+    .manager-card-header p {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: #adb5bd;
+    }
+
+    .manager-card-body {
+        padding: 32px;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 5px;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 1.5px solid #dee2e6;
+        font-size: 14px;
+        padding: 10px 14px;
+        transition: border-color 0.2s;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #0f3460;
+        box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.1);
+    }
+
+    .input-icon-wrapper {
+        position: relative;
+    }
+
+    .input-icon-wrapper i {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #adb5bd;
+        font-size: 14px;
+        z-index: 1;
+    }
+
+    .input-icon-wrapper input,
+    .input-icon-wrapper select {
+        padding-left: 38px;
+    }
+
+    .profile-upload-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1.5px dashed #ced4da;
+        border-radius: 8px;
+        padding: 10px 14px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #6c757d;
+        transition: border-color 0.2s;
+    }
+
+    .profile-upload-label:hover {
+        border-color: #0f3460;
+        color: #0f3460;
+    }
+
+    .profile-upload-label i {
+        font-size: 18px;
+        color: #e2b96f;
+    }
+
+    #profile { display: none; }
+
+    .btn-add-manager {
+        background: linear-gradient(135deg, #1a1a2e, #0f3460);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 11px 28px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .btn-add-manager:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        color: white;
+    }
+
+    .btn-cancel {
+        border-radius: 8px;
+        padding: 11px 24px;
+        font-size: 14px;
+    }
+
+    .row-fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    @media (max-width: 576px) {
+        .row-fields { grid-template-columns: 1fr; }
+        .manager-card-body { padding: 20px; }
+    }
+</style>
+
+<div class="manager-card">
+
+    <div class="manager-card-header">
+        <h5><i class="fas fa-user-tie me-2"></i>Add New Manager</h5>
+        <p>Create a manager account to handle bookings and operations</p>
+    </div>
+
+    <div class="manager-card-body">
+
+        {% if messages %}
+            {% for m in messages %}
+            <div class="alert alert-danger d-flex align-items-center gap-2 py-2 px-3 mb-3" style="font-size:13px; border-radius:8px;">
+                <i class="fas fa-exclamation-circle"></i> {{ m }}
+            </div>
+            {% endfor %}
+        {% endif %}
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <label>Username</label><br>
-            <input type="text" name="username" required><br><br>
+            <div class="row-fields mb-3">
+                <div>
+                    <label class="form-label">Username</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="username" class="form-control" placeholder="Enter username" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">Phone Number</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-phone"></i>
+                        <input type="text" name="phone" class="form-control" placeholder="10-digit number" required>
+                    </div>
+                </div>
+            </div>
 
-            <label>Profile</label><br>
-            <input type="file" name="profile" accept="image*/"><br><br>
+            <div class="mb-3">
+                <label class="form-label">Email Address</label>
+                <div class="input-icon-wrapper">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" name="email" class="form-control" placeholder="manager@example.com" required>
+                </div>
+            </div>
 
-            <label>Email</label><br>
-            <input type="email" name="email" required><br><br>
+            <div class="mb-3">
+                <label class="form-label">Address</label>
+                <div class="input-icon-wrapper">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" name="address" class="form-control" placeholder="City / Area">
+                </div>
+            </div>
 
-            <label>Phone Number</label><br>
-            <input type="text" name="phone" required><br><br>
+            <div class="row-fields mb-3">
+                <div>
+                    <label class="form-label">Password</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" class="form-control" placeholder="Password" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">Confirm Password</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password1" class="form-control" placeholder="Re-enter password" required>
+                    </div>
+                </div>
+            </div>
 
-            <label>Role</label><br>
-            <select name="role">
-                <option value="manager">Manager</option>
-            </select><br><br>
+            <div class="mb-4">
+                <label class="form-label">Profile Photo <span class="text-muted">(optional)</span></label>
+                <label class="profile-upload-label" for="profile">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span id="file-name">Click to upload profile photo</span>
+                </label>
+                <input type="file" name="profile" id="profile" accept="image/*">
+            </div>
 
-            <label>Address</label><br>
-            <input type="text" name="address"><br><br>
+            <input type="hidden" name="role" value="manager">
 
-            <label>Password</label><br>
-            <input type="password" name="password" required><br><br>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-add-manager">
+                    <i class="fas fa-user-plus me-2"></i>Add Manager
+                </button>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-cancel">Cancel</a>
+            </div>
 
-            
-            <label>Confirm Password</label><br>
-            <input type="password" name="password1" required><br><br>
-         
-            <button type="submit">Register</button>
         </form>
-
     </div>
 </div>
+
+<script>
+    document.getElementById('profile').addEventListener('change', function () {
+        const name = this.files[0] ? this.files[0].name : 'Click to upload profile photo';
+        document.getElementById('file-name').textContent = name;
+    });
+</script>
 
 {% endblock %}

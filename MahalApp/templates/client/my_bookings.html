@@ -1,5 +1,5 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'client/client_base.html' %}
+{% block client_content %}
 
 <div class="container py-5">
 
@@ -7,10 +7,6 @@
         <h4><i class="fas fa-list me-2"></i>My Bookings</h4>
         <a href="{% url 'booking_form' %}" class="btn btn-dark">+ New Booking</a>
     </div>
-
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-    {% endfor %}
 
     {% if bookings %}
     <div class="table-responsive">

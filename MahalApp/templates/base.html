@@ -21,25 +21,71 @@
 
     {% include "partials/header.html" %}
 
-    <main class="container mt-3">
-      
-        {% if messages %}
-            <div id="auto-hide-message">
-                {% for m in messages %}
-                    <h3 style="color:red">{{m}}</h3>
-                {% endfor %}
+    <!-- TOAST NOTIFICATIONS -->
+    <div id="toast-container" style="position:fixed; top:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:10px;">
+        {% for m in messages %}
+        <div class="toast-notify toast-{{ m.tags }}" style="
+            min-width: 300px;
+            max-width: 380px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            padding: 14px 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            border-left: 5px solid
+            {% if m.tags == 'error' %}#dc3545
+            {% elif m.tags == 'success' %}#198754
+            {% elif m.tags == 'warning' %}#ffc107
+            {% else %}#0d6efd{% endif %};
+            animation: slideIn 0.4s ease;
+        ">
+            <div style="font-size:20px; margin-top:2px;">
+                {% if m.tags == 'error' %}<i class="fas fa-times-circle" style="color:#dc3545;"></i>
+                {% elif m.tags == 'success' %}<i class="fas fa-check-circle" style="color:#198754;"></i>
+                {% elif m.tags == 'warning' %}<i class="fas fa-exclamation-triangle" style="color:#ffc107;"></i>
+                {% else %}<i class="fas fa-info-circle" style="color:#0d6efd;"></i>{% endif %}
             </div>
-        {% endif %}
+            <div style="flex:1;">
+                <div style="font-size:12px; font-weight:700; text-transform:uppercase; color:#6c757d; margin-bottom:3px;">
+                    {% if m.tags == 'error' %}Error
+                    {% elif m.tags == 'success' %}Success
+                    {% elif m.tags == 'warning' %}Warning
+                    {% else %}Info{% endif %}
+                </div>
+                <div style="font-size:14px; color:#212529;">{{ m }}</div>
+            </div>
+            <div onclick="this.parentElement.remove()" style="cursor:pointer; color:#adb5bd; font-size:16px; margin-top:2px;">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 
+    <style>
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(60px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to   { opacity: 0; transform: translateX(60px); }
+        }
+    </style>
+
+    <main class="{% block main_class %}container mt-3{% endblock %}">
         {% block content %} {% endblock %}
     </main>
+
 <script>
-    setTimeout(function () {
-        const msg = document.getElementById('auto-hide-message');
-        if (msg) {
-            msg.style.display = 'none';
-        }
-    }, 3000); // 3 seconds
+    // Auto remove toasts after 5 seconds
+    document.querySelectorAll('.toast-notify').forEach(function(toast, i) {
+        setTimeout(function() {
+            toast.style.animation = 'fadeOut 0.4s ease forwards';
+            setTimeout(function() { toast.remove(); }, 400);
+        }, 4000 + (i * 300));
+    });
 </script>
 
     {% include "partials/footer.html" %}
