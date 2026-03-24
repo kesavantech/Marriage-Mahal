@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4><i class="fas fa-list me-2"></i>My Bookings</h4>
+        <a href="{% url 'booking_form' %}" class="btn btn-dark">+ New Booking</a>
+    </div>
+
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+
+    {% if bookings %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Event</th>
+                    <th>Hall</th>
+                    <th>Date</th>
+                    <th>Guests</th>
+                    <th>Total</th>
+                    <th>Advance</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ booking.event_type }}</td>
+                    <td>{{ booking.hall_type }}</td>
+                    <td>{{ booking.event_date }}</td>
+                    <td>{{ booking.guest_count }}</td>
+                    <td>₹{{ booking.total_amount }}</td>
+                    <td>₹{{ booking.advance_amount }}</td>
+                    <td>
+                        {% if booking.status == 'Pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif booking.status == 'Confirmed' %}
+                            <span class="badge bg-success">Confirmed</span>
+                        {% elif booking.status == 'Rejected' %}
+                            <span class="badge bg-danger">Rejected</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Cancelled</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if booking.status == 'Pending' %}
+                        <form method="POST" action="{% url 'cancel_booking' booking.id %}">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('Cancel this booking?')">Cancel</button>
+                        </form>
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="alert alert-info">No bookings yet. <a href="{% url 'booking_form' %}">Book now!</a></div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
