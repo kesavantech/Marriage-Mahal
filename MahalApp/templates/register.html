@@ -1,45 +1,351 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>This IS Register Page!</h1>
+<style>
+    body {
+        background: #f0f2f5;
+    }
 
-<div class="container">
-    <div style="background-color:red; padding:20px;">
+    .register-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 15px;
+    }
 
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
+    .register-card {
+        display: flex;
+        width: 100%;
+        max-width: 900px;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
 
-            <label>Username</label><br>
-            <input type="text" name="username" required><br><br>
+    /* LEFT PANEL */
+    .register-left {
+        background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+        color: white;
+        width: 38%;
+        padding: 50px 35px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
 
-            <label>Profile</label><br>
-            <input type="file" name="profile" accept="image*/"><br><br>
+    .register-left .brand-icon {
+        font-size: 52px;
+        margin-bottom: 20px;
+        color: #e2b96f;
+    }
 
-            <label>Email</label><br>
-            <input type="email" name="email" required><br><br>
+    .register-left h2 {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        color: #e2b96f;
+    }
 
-            <label>Phone Number</label><br>
-            <input type="text" name="phone" required><br><br>
+    .register-left p {
+        font-size: 13px;
+        color: #adb5bd;
+        line-height: 1.7;
+    }
 
-            <label>Role</label><br>
-            <select name="role">
-                <option value="client">Client</option>
-            </select><br><br>
+    .register-left .divider {
+        width: 50px;
+        height: 3px;
+        background: #e2b96f;
+        margin: 18px auto;
+        border-radius: 2px;
+    }
 
-            <label>Address</label><br>
-            <input type="text" name="address"><br><br>
+    .register-left .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 14px;
+        font-size: 13px;
+        color: #ced4da;
+    }
 
-            <label>Password</label><br>
-            <input type="password" name="password" required><br><br>
+    .register-left .feature-item i {
+        color: #e2b96f;
+        font-size: 14px;
+    }
 
-            
-            <label>Confirm Password</label><br>
-            <input type="password" name="password1" required><br><br>
-         
-            <button type="submit">Register</button>
-        </form>
+    /* RIGHT PANEL */
+    .register-right {
+        background: #ffffff;
+        width: 62%;
+        padding: 45px 40px;
+        overflow-y: auto;
+    }
+
+    .register-right h4 {
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 5px;
+    }
+
+    .register-right .subtitle {
+        font-size: 13px;
+        color: #6c757d;
+        margin-bottom: 28px;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 5px;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 1.5px solid #dee2e6;
+        font-size: 14px;
+        padding: 10px 14px;
+        transition: border-color 0.2s;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #0f3460;
+        box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.1);
+    }
+
+    .input-icon-wrapper {
+        position: relative;
+    }
+
+    .input-icon-wrapper i {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #adb5bd;
+        font-size: 14px;
+    }
+
+    .input-icon-wrapper input,
+    .input-icon-wrapper select {
+        padding-left: 38px;
+    }
+
+    .profile-upload-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1.5px dashed #ced4da;
+        border-radius: 8px;
+        padding: 10px 14px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #6c757d;
+        transition: border-color 0.2s;
+    }
+
+    .profile-upload-label:hover {
+        border-color: #0f3460;
+        color: #0f3460;
+    }
+
+    .profile-upload-label i {
+        font-size: 18px;
+        color: #e2b96f;
+    }
+
+    #profile {
+        display: none;
+    }
+
+    .btn-register {
+        background: linear-gradient(135deg, #1a1a2e, #0f3460);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .btn-register:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        color: white;
+    }
+
+    .login-link {
+        text-align: center;
+        font-size: 13px;
+        color: #6c757d;
+        margin-top: 18px;
+    }
+
+    .login-link a {
+        color: #0f3460;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+
+    .row-fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    @media (max-width: 768px) {
+        .register-card {
+            flex-direction: column;
+        }
+        .register-left, .register-right {
+            width: 100%;
+        }
+        .register-left {
+            padding: 35px 25px;
+        }
+        .row-fields {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="register-wrapper">
+    <div class="register-card">
+
+        <!-- LEFT PANEL -->
+        <div class="register-left">
+            <div class="brand-icon">
+                <i class="fas fa-gopuram"></i>
+            </div>
+            <h2>Muthukumaran Mahal</h2>
+            <div class="divider"></div>
+            <p>Your dream celebration starts here. Register to book your perfect event hall.</p>
+
+            <div class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Easy Online Booking</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span>AC & Non-AC Halls</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span>All Events Welcome</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Instant Confirmation</span>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="register-right">
+            <h4>Create Your Account</h4>
+            <p class="subtitle">Fill in the details below to get started</p>
+
+            {% if messages %}
+                {% for m in messages %}
+                <div class="alert alert-danger d-flex align-items-center gap-2 py-2 px-3 mb-3" style="font-size:13px; border-radius:8px;">
+                    <i class="fas fa-exclamation-circle"></i> {{ m }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row-fields mb-3">
+                    <div>
+                        <label class="form-label">Username</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="username" class="form-control" placeholder="Enter username" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Phone Number</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-phone"></i>
+                            <input type="text" name="phone" class="form-control" placeholder="10-digit number" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Address</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" name="address" class="form-control" placeholder="Your city / area">
+                    </div>
+                </div>
+
+                <div class="row-fields mb-3">
+                    <div>
+                        <label class="form-label">Password</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password" class="form-control" placeholder="Password" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Confirm Password</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password1" class="form-control" placeholder="Re-enter password" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Profile Photo <span class="text-muted">(optional)</span></label>
+                    <label class="profile-upload-label" for="profile">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span id="file-name">Click to upload profile photo</span>
+                    </label>
+                    <input type="file" name="profile" id="profile" accept="image/*">
+                </div>
+
+                <input type="hidden" name="role" value="client">
+
+                <button type="submit" class="btn btn-register w-100 mt-2">
+                    <i class="fas fa-user-plus me-2"></i> Create Account
+                </button>
+
+                <div class="login-link">
+                    Already have an account? <a href="{% url 'login' %}">Sign In</a>
+                </div>
+
+            </form>
+        </div>
 
     </div>
 </div>
+
+<script>
+    document.getElementById('profile').addEventListener('change', function () {
+        const name = this.files[0] ? this.files[0].name : 'Click to upload profile photo';
+        document.getElementById('file-name').textContent = name;
+    });
+</script>
 
 {% endblock %}
