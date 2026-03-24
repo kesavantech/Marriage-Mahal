@@ -3,7 +3,7 @@ import requests
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from MahalApp.models import User, HomeBanner
+from MahalApp.models import User, HomeBanner, Booking
 from django.contrib.auth.decorators import login_required
 
 
@@ -64,6 +64,7 @@ def register_view(request):
         if User.objects.filter(phone=phone).exists():
             messages.error(request,'phone number is already exist!')
             return redirect('register')
+        
         User.objects.create_user(
             username=username, email=email, phone=phone, role=role, address=address,
             password=password1, profile = profile
@@ -96,18 +97,16 @@ def login_view(request):
 
     return render(request,'login.html')
 
+
+    
 @login_required
 def dashboard_view(request):
+    context = {}
     if request.user.role in ['admin', 'manager']:
-        all_users = User.objects.all()
-        total_users = User.objects.all().count()
-        context={
-            "all_users":all_users,
-            "total_users":total_users
-            }
-    
-    return render(request, 'dashboard.html',context)
-    
+        context['all_users'] = User.objects.all()
+        context['total_users'] = User.objects.count()
+    return render(request, 'dashboard.html', context)
+
 
 @login_required
 def profile_view(request):
@@ -184,3 +183,41 @@ def footer_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+
+@login_required
+def booking_form_view(request):
+    if request.user.role != 'client':
+        messages.error(request, 'Only clients can make bookings!')
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        event_date = request.POST.get('event_date')
+        event_type = request.POST.get('event_type')
+        hall_type = request.POST.get('hall_type')
+        guest_count = request.POST.get('guest_count')
+        special_requests = request.POST.get('special_requests', '')
+
+        # Date conflict check
+        if Booking.objects.filter(event_date=event_date, status='Confirmed').exists():
+            messages.error(request, 'This date is already booked! Please choose another date.')
+            return redirect('booking_form')
+
+        Booking.objects.create(
+            user=request.user,
+            event_date=event_date,
+            event_type=event_type,
+            hall_type=hall_type,
+            guest_count=guest_count,
+            special_requests=special_requests
+        )
+        messages.success(request, 'Booking submitted successfully! We will confirm shortly.')
+        return redirect('my_bookings')
+
+    context = {
+        'event_choices': Booking.event_choices,
+        'hall_choices': Booking.hall_choices,
+        'event_prices': Booking.EVENT_PRICES,
+        'ac_extra': Booking.AC_EXTRA,
+    }
+    return render(request, 'booking_form.html', context)

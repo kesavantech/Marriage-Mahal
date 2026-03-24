@@ -1,1 +1,90 @@
-<h1>Booking Form </h1>
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0"><i class="fas fa-calendar-check me-2"></i>Book Your Event</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Event Type</label>
+                            <select name="event_type" id="event_type" class="form-select" required>
+                                {% for value, label in event_choices %}
+                                    <option value="{{ value }}">{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Hall Type</label>
+                            <select name="hall_type" id="hall_type" class="form-select" required>
+                                {% for value, label in hall_choices %}
+                                    <option value="{{ value }}">{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Event Date</label>
+                            <input type="date" name="event_date" class="form-control" required
+                                   min="{{ today }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Guest Count</label>
+                            <input type="number" name="guest_count" class="form-control" min="1" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Special Requests (optional)</label>
+                            <textarea name="special_requests" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <!-- Price Preview -->
+                        <div class="alert alert-info">
+                            <strong>Total Amount:</strong> ₹<span id="total_price">0</span><br>
+                            <strong>Advance (15%):</strong> ₹<span id="advance_price">0</span>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark w-100">Submit Booking</button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const eventPrices = {{ event_prices|safe }};
+    const acExtra = {{ ac_extra }};
+
+    function updatePrice() {
+        const event = document.getElementById('event_type').value;
+        const hall = document.getElementById('hall_type').value;
+        let base = eventPrices[event] || 25000;
+        if (hall === 'AC') base += acExtra;
+        const advance = Math.round(base * 0.15);
+        document.getElementById('total_price').innerText = base.toLocaleString('en-IN');
+        document.getElementById('advance_price').innerText = advance.toLocaleString('en-IN');
+    }
+
+    document.getElementById('event_type').addEventListener('change', updatePrice);
+    document.getElementById('hall_type').addEventListener('change', updatePrice);
+    updatePrice();
+</script>
+
+{% endblock %}
