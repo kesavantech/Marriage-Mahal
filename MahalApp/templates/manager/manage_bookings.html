@@ -1,61 +1,68 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'manager/manager_base.html' %}
+{% block manager_content %}
 
-<div class="container py-5">
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px;">
+    <h4 style="margin:0; color:#1a1a2e; font-weight:700;">
+        <i class="fas fa-tasks me-2" style="color:#e2b96f;"></i>Manage Bookings
+    </h4>
+    <span style="font-size:14px; color:#6c757d;">Welcome back, <strong>{{ request.user.username }}</strong></span>
+</div>
 
-    <h4 class="mb-4"><i class="fas fa-tasks me-2"></i>Manage Bookings</h4>
-
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-    {% endfor %}
-
-    {% if bookings %}
+{% if bookings %}
+<div style="background:#fff; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.06); overflow:hidden;">
     <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-            <thead class="table-dark">
+        <table class="table table-hover mb-0" style="font-size:13px;">
+            <thead style="background:#1a1a2e; color:#fff;">
                 <tr>
-                    <th>#</th>
-                    <th>Client</th>
-                    <th>Event</th>
-                    <th>Hall</th>
-                    <th>Date</th>
-                    <th>Guests</th>
-                    <th>Total</th>
-                    <th>Advance</th>
-                    <th>Advance Paid</th>
-                    <th>Screenshot</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th class="px-3 py-3">#</th>
+                    <th class="px-3 py-3">Client</th>
+                    <th class="px-3 py-3">Event</th>
+                    <th class="px-3 py-3">Hall</th>
+                    <th class="px-3 py-3">Date</th>
+                    <th class="px-3 py-3">Guests</th>
+                    <th class="px-3 py-3">Total</th>
+                    <th class="px-3 py-3">Advance</th>
+                    <th class="px-3 py-3">Paid</th>
+                    <th class="px-3 py-3">Screenshot</th>
+                    <th class="px-3 py-3">Status</th>
+                    <th class="px-3 py-3">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for booking in bookings %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ booking.user.username }}</td>
-                    <td>{{ booking.event_type }}</td>
-                    <td>{{ booking.hall_type }}</td>
-                    <td>{{ booking.event_date }}</td>
-                    <td>{{ booking.guest_count }}</td>
-                    <td>₹{{ booking.total_amount }}</td>
-                    <td>₹{{ booking.advance_amount }}</td>
-                    <td>
+                <tr style="vertical-align:middle; border-bottom:1px solid #f0f2f5;">
+                    <td class="px-3 py-3" style="color:#6c757d;">{{ forloop.counter }}</td>
+                    <td class="px-3 py-3" style="font-weight:600; color:#1a1a2e;">{{ booking.user.username }}</td>
+                    <td class="px-3 py-3">{{ booking.event_type }}</td>
+                    <td class="px-3 py-3">
+                        {% if booking.hall_type == 'AC' %}
+                            <span class="badge" style="background:#0dcaf0; color:#000;">AC</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Normal</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-3 py-3" style="white-space:nowrap;">{{ booking.event_date }}</td>
+                    <td class="px-3 py-3" style="text-align:center;">{{ booking.guest_count }}</td>
+                    <td class="px-3 py-3" style="font-weight:600;">&#8377;{{ booking.total_amount }}</td>
+                    <td class="px-3 py-3">&#8377;{{ booking.advance_amount }}</td>
+                    <td class="px-3 py-3">
                         {% if booking.advance_paid %}
                             <span class="badge bg-success">Paid</span>
                         {% else %}
                             <span class="badge bg-warning text-dark">Unpaid</span>
                         {% endif %}
                     </td>
-                    <td>
+                    <td class="px-3 py-3">
                         {% if booking.payment_screenshot %}
                             <a href="{{ booking.payment_screenshot.url }}" target="_blank">
-                                <img src="{{ booking.payment_screenshot.url }}" style="height:45px; width:45px; object-fit:cover; border-radius:6px; border:1px solid #dee2e6;">
+                                <img src="{{ booking.payment_screenshot.url }}"
+                                     style="height:40px; width:40px; object-fit:cover; border-radius:6px; border:1px solid #dee2e6;">
                             </a>
                         {% else %}
-                            <span class="text-muted" style="font-size:12px;">No screenshot</span>
+                            <span style="color:#adb5bd; font-size:12px;">None</span>
                         {% endif %}
                     </td>
-                    <td>
+                    <td class="px-3 py-3">
                         {% if booking.status == 'Pending' %}
                             <span class="badge bg-warning text-dark">Pending</span>
                         {% elif booking.status == 'Confirmed' %}
@@ -66,32 +73,37 @@
                             <span class="badge bg-secondary">Cancelled</span>
                         {% endif %}
                     </td>
-                    <td>
+                    <td class="px-3 py-3" style="white-space:nowrap;">
                         {% if booking.status == 'Pending' %}
                             {% if not booking.advance_paid %}
-                            <form method="POST" action="{% url 'mark_advance_paid' booking.id %}" class="d-inline">
-                                {% csrf_token %}
-                                <button class="btn btn-sm btn-warning"
-                                    onclick="return confirm('Mark advance as paid for this booking?')">
-                                    <i class="fas fa-check me-1"></i>Mark Paid
-                                </button>
-                            </form>
+                                <form method="POST" action="{% url 'mark_advance_paid' booking.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-warning"
+                                            onclick="return confirm('Mark advance as paid?')"
+                                            style="font-size:12px;">
+                                        <i class="fas fa-check me-1"></i>Mark Paid
+                                    </button>
+                                </form>
                             {% else %}
-                            <form method="POST" action="{% url 'confirm_booking' booking.id %}" class="d-inline">
-                                {% csrf_token %}
-                                <button class="btn btn-sm btn-success">
-                                    <i class="fas fa-check-circle me-1"></i>Confirm
-                                </button>
-                            </form>
-                            <form method="POST" action="{% url 'reject_booking' booking.id %}" class="d-inline">
-                                {% csrf_token %}
-                                <button class="btn btn-sm btn-danger">
-                                    <i class="fas fa-times me-1"></i>Reject
-                                </button>
-                            </form>
+                                <form method="POST" action="{% url 'confirm_booking' booking.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-success"
+                                            onclick="return confirm('Confirm this booking?')"
+                                            style="font-size:12px;">
+                                        <i class="fas fa-check-circle me-1"></i>Confirm
+                                    </button>
+                                </form>
+                                <form method="POST" action="{% url 'reject_booking' booking.id %}" class="d-inline ms-1">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Reject this booking?')"
+                                            style="font-size:12px;">
+                                        <i class="fas fa-times me-1"></i>Reject
+                                    </button>
+                                </form>
                             {% endif %}
                         {% else %}
-                            —
+                            <span style="color:#adb5bd; font-size:12px;">&#8212;</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -99,10 +111,58 @@
             </tbody>
         </table>
     </div>
-    {% else %}
-        <div class="alert alert-info">No bookings found.</div>
-    {% endif %}
-
 </div>
+
+<!-- PAGINATION -->
+{% if bookings.paginator.num_pages > 1 %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+    <span style="font-size:13px; color:#6c757d;">
+        Showing {{ bookings.start_index }}&ndash;{{ bookings.end_index }} of {{ bookings.paginator.count }} bookings
+    </span>
+    <nav>
+        <ul class="pagination mb-0" style="gap:4px;">
+
+            <li class="page-item {% if not bookings.has_previous %}disabled{% endif %}">
+                <a class="page-link" href="{% if bookings.has_previous %}?page={{ bookings.previous_page_number }}{% else %}#{% endif %}"
+                   style="border-radius:8px; border:none; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,0.08); color:#1a1a2e;">
+                    <i class="fas fa-chevron-left" style="font-size:11px;"></i>
+                </a>
+            </li>
+
+            {% for num in bookings.paginator.page_range %}
+                {% if bookings.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link"
+                              style="border-radius:8px; border:none; background:#1a1a2e; color:#e2b96f; box-shadow:0 2px 6px rgba(0,0,0,0.15);">
+                            {{ num }}
+                        </span>
+                    </li>
+                {% elif num >= bookings.number|add:"-2" and num <= bookings.number|add:"2" %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}"
+                           style="border-radius:8px; border:none; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,0.08); color:#1a1a2e;">
+                            {{ num }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            <li class="page-item {% if not bookings.has_next %}disabled{% endif %}">
+                <a class="page-link" href="{% if bookings.has_next %}?page={{ bookings.next_page_number }}{% else %}#{% endif %}"
+                   style="border-radius:8px; border:none; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,0.08); color:#1a1a2e;">
+                    <i class="fas fa-chevron-right" style="font-size:11px;"></i>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+</div>
+{% endif %}
+
+{% else %}
+<div style="background:#fff; border-radius:12px; padding:28px; box-shadow:0 4px 15px rgba(0,0,0,0.06); color:#6c757d;">
+    <i class="fas fa-calendar-times me-2"></i>No bookings found.
+</div>
+{% endif %}
 
 {% endblock %}
