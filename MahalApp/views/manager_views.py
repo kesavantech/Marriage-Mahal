@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.core.paginator import Paginator
 from MahalApp.models import Booking
 
 
@@ -10,10 +9,7 @@ def manage_bookings_view(request):
     if request.user.role not in ['manager', 'admin']:
         messages.error(request, 'Access Denied!')
         return redirect('dashboard')
-    all_bookings = Booking.objects.all().order_by('-created_at')
-    paginator = Paginator(all_bookings, 8)
-    page = request.GET.get('page', 1)
-    bookings = paginator.get_page(page)
+    bookings = Booking.objects.all().order_by('-created_at')
     return render(request, 'manager/manage_bookings.html', {'bookings': bookings})
 
 
