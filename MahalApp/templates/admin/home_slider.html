@@ -5,7 +5,7 @@
   <div class="row g-4">
 
     <!-- FORM -->
-    <div class="col-lg-7">
+    <div class="col-lg-12">
       <div class="card border-0 shadow-sm">
         <div class="card-header bg-white border-bottom py-3">
           <h5 class="mb-0 fw-bold"><i class="fas fa-sliders-h me-2 text-warning"></i>Home Slider Settings</h5>
@@ -111,125 +111,8 @@
       </div>
     </div>
 
-    <!-- LIVE PREVIEW -->
-    <div class="col-lg-5">
-      <div class="card border-0 shadow-sm sticky-top" style="top:20px;">
-        <div class="card-header bg-white border-bottom py-3">
-          <h5 class="mb-0 fw-bold"><i class="fas fa-eye me-2 text-warning"></i>Live Preview</h5>
-          <small class="text-muted">Updates as you change settings</small>
-        </div>
-        <div class="card-body p-0">
 
-          <!-- Header Preview -->
-          <div id="prev_header" class="px-3 py-2 d-flex align-items-center justify-content-between"
-               style="background:{{ home.bg_color|default:'#1a1a2e' }};">
-            <div class="d-flex align-items-center gap-2">
-              {% if home.logo %}
-                <img id="prev_logo" src="{{ home.logo.url }}" height="40"
-                     style="border-radius:{{ home.logo_radius|default:'40' }}px; object-fit:cover;">
-              {% else %}
-                <img id="prev_logo" src="" height="40" class="d-none"
-                     style="border-radius:40px; object-fit:cover;">
-              {% endif %}
-              <span id="prev_name"
-                    style="color:{{ home.font_color|default:'#ffffff' }}; font-size:{{ home.font_size|default:'16' }}px; font-family:'{{ home.font_family|default:'Poppins' }}',sans-serif; font-weight:600;">
-                {{ home.mahal_name|default:"MuthuKumaran Mahal" }}
-              </span>
-            </div>
-            <div class="d-flex gap-2">
-              {% for link in "Home,About,Contact"|split:"," %}
-                <span id="prev_link_{{ forloop.counter }}"
-                      style="color:{{ home.font_color|default:'#ffffff' }}; font-size:{{ home.font_size|default:'16' }}px; font-family:'{{ home.font_family|default:'Poppins' }}',sans-serif;">
-                  {{ link }}
-                </span>
-              {% endfor %}
-            </div>
-          </div>
 
-          <!-- Footer Preview -->
-          <div id="prev_footer" class="px-3 py-3 mt-1"
-               style="background:{{ home.bg_color|default:'#1a1a2e' }};">
-            <div class="d-flex align-items-center gap-2 mb-2">
-              {% if home.logo %}
-                <img id="prev_logo_f" src="{{ home.logo.url }}" height="36"
-                     style="border-radius:{{ home.logo_radius|default:'40' }}px; object-fit:cover;">
-              {% else %}
-                <img id="prev_logo_f" src="" height="36" class="d-none"
-                     style="border-radius:40px; object-fit:cover;">
-              {% endif %}
-              <span id="prev_name_f"
-                    style="color:{{ home.font_color|default:'#ffffff' }}; font-size:{{ home.font_size|default:'16' }}px; font-family:'{{ home.font_family|default:'Poppins' }}',sans-serif; font-weight:700;">
-                {{ home.mahal_name|default:"Muthukumaran Mahal" }}
-              </span>
-            </div>
-            <p id="prev_tagline"
-               style="color:{{ home.font_color|default:'#ffffff' }}; font-size:calc({{ home.font_size|default:'16' }}px - 2px); font-family:'{{ home.font_family|default:'Poppins' }}',sans-serif; opacity:0.7; margin:0;">
-              &copy; 2025 {{ home.mahal_name|default:"Muthukumaran Mahal" }}. All Rights Reserved.
-            </p>
-          </div>
 
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<script>
-  const bg    = document.getElementById('f_bg');
-  const fc    = document.getElementById('f_fc');
-  const fs    = document.getElementById('f_fs');
-  const ff    = document.getElementById('f_ff');
-  const lr    = document.getElementById('f_lr');
-  const name  = document.getElementById('f_name');
-  const logo  = document.getElementById('f_logo');
-
-  function update() {
-    const bgV = bg.value, fcV = fc.value, fsV = fs.value + 'px', ffV = ff.value;
-
-    document.getElementById('bg_hex').textContent = bgV;
-    document.getElementById('fc_hex').textContent = fcV;
-
-    // header preview
-    document.getElementById('prev_header').style.background = bgV;
-    document.getElementById('prev_footer').style.background = bgV;
-
-    ['prev_name','prev_name_f'].forEach(id => {
-      const el = document.getElementById(id);
-      el.style.color = fcV; el.style.fontSize = fsV; el.style.fontFamily = `'${ffV}',sans-serif`;
-      el.textContent = name.value || 'MuthuKumaran Mahal';
-    });
-
-    document.getElementById('prev_tagline').style.color = fcV;
-    document.getElementById('prev_tagline').style.fontSize = `calc(${fsV} - 2px)`;
-    document.getElementById('prev_tagline').style.fontFamily = `'${ffV}',sans-serif`;
-    document.getElementById('prev_tagline').textContent = `© 2025 ${name.value || 'Muthukumaran Mahal'}. All Rights Reserved.`;
-
-    for (let i = 1; i <= 3; i++) {
-      const el = document.getElementById('prev_link_' + i);
-      if (el) { el.style.color = fcV; el.style.fontSize = fsV; el.style.fontFamily = `'${ffV}',sans-serif`; }
-    }
-
-    // logo radius
-    const lrV = lr.value + 'px';
-    ['prev_logo','prev_logo_f','logo_preview'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.style.borderRadius = lrV;
-    });
-  }
-
-  // Logo file preview
-  logo.addEventListener('change', function() {
-    const file = this.files[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    ['prev_logo','prev_logo_f','logo_preview'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) { el.src = url; el.classList.remove('d-none'); }
-    });
-  });
-
-  [bg, fc, fs, ff, lr, name].forEach(el => el.addEventListener('input', update));
-</script>
 
 {% endblock %}

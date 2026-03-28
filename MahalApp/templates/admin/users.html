@@ -21,6 +21,39 @@
         height:60px;
         object-fit:cover;
         border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    img:hover { transform: scale(1.1); }
+
+    /* Lightbox */
+    #lightbox {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+    #lightbox.show { display: flex; }
+    #lightbox img {
+        max-width: 90vw;
+        max-height: 90vh;
+        border-radius: 10px;
+        width: auto;
+        height: auto;
+        cursor: default;
+        box-shadow: 0 0 40px rgba(255,255,255,0.2);
+    }
+    #lightbox-close {
+        position: fixed;
+        top: 20px;
+        right: 30px;
+        font-size: 2.5rem;
+        color: #fff;
+        cursor: pointer;
+        line-height: 1;
     }
 </style>
 <table>
@@ -31,7 +64,6 @@
         <th>role</th>
         <th>Address</th>
         <th>Profile</th>
-        <th>Status</th>
         <th>Action</th>
     </tr>
     {% for user in users %}
@@ -43,30 +75,26 @@
         <td> {{user.address}} </td>
         <td>
             {% if user.profile %}
-            <img src="{{ user.profile.url }}" width="60">
+            <img src="{{ user.profile.url }}" width="60" onclick="openLightbox('{{ user.profile.url }}')">
             {% else %}
             <p style="text-shadow: #000;">User Don't Have Profile !</p>
             {% endif %}
         </td>
        
         <td>
-            {% if user.is_active %}
-            <h5>Active</h5>
-            {% else %}
-            <h5>Deactive</h5>
-            {% endif %}
-        </td>
-        <td>
             <form action="{% url 'change_action' user.id %}" method="POST" onsubmit="return confirmChange()">
                 {% csrf_token %}
-                <select name="status">
-
-                <option value="True" {% if user.is_active %}selected{% endif %}>Active</option>
-
-                <option value="False" {% if not user.is_active %}selected{% endif %}>Deactive</option>
-
-                </select>
-                <button type="submit" class="btn btn-outline-primary btn-sm mt-2 mb-2">Changes</button>
+                {% if user.is_active %}
+                    <input type="hidden" name="status" value="False">
+                    <button type="submit" class="btn btn-success btn-sm px-3">
+                        <i class="fas fa-check-circle me-1"></i>Active
+                    </button>
+                {% else %}
+                    <input type="hidden" name="status" value="True">
+                    <button type="submit" class="btn btn-danger btn-sm px-3">
+                        <i class="fas fa-ban me-1"></i>Inactive
+                    </button>
+                {% endif %}
             </form>
         </td>
     </tr>
@@ -78,12 +106,25 @@
     
 </table>
 
-<br>
-<br>
+<br><br>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+    <span id="lightbox-close" onclick="closeLightbox()">&times;</span>
+    <img id="lightbox-img" src="" onclick="event.stopPropagation()">
+</div>
 
 <script>
     function confirmChange(){
         return confirm("Are You Sure Change Status ?")
     }
+    function openLightbox(url){
+        document.getElementById('lightbox-img').src = url;
+        document.getElementById('lightbox').classList.add('show');
+    }
+    function closeLightbox(){
+        document.getElementById('lightbox').classList.remove('show');
+    }
+    document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
 </script>
 {% endblock %}
