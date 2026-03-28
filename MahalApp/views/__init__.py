@@ -2,7 +2,7 @@ from .common_views import (
     home_view, register_view, login_view, dashboard_view,
     about_view, contact_view, special_view, whatsapp_greet,
     logout_view, header_view, footer_view, profile_view,
-    booking_form_view,
+    booking_form_view, booking_details_view,
 )
 
 from .admin_views import (

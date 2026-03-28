@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  .cal-wrap {
+    max-width: 1050px;
+    margin: 30px auto;
+    font-family: 'Noto Sans Tamil', 'Latha', sans-serif;
+    background: #fff;
+    border: 2px solid #b8860b;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.13);
+  }
+
+  .cal-head {
+    background: linear-gradient(135deg, #8B0000, #c0392b);
+    color: #fff;
+    text-align: center;
+    padding: 14px 20px;
+  }
+  .cal-head h2 { margin: 0; font-size: 1.6rem; }
+  .cal-head p  { margin: 3px 0 0; font-size: 0.9rem; opacity: 0.85; }
+
+  .cal-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fdf0d5;
+    padding: 9px 20px;
+    border-bottom: 1px solid #d4a017;
+  }
+  .cal-nav a {
+    background: #8B0000; color: #fff;
+    padding: 5px 16px; border-radius: 20px;
+    text-decoration: none; font-size: 0.85rem;
+  }
+  .cal-nav a:hover { background: #c0392b; }
+
+  table.cal-table { width: 100%; border-collapse: collapse; }
+
+  table.cal-table thead th {
+    background: #8B0000; color: #fff;
+    text-align: center; padding: 9px 4px;
+    font-size: 0.82rem; border: 1px solid #a00;
+  }
+  table.cal-table thead th:first-child,
+  table.cal-table thead th:last-child { background: #a93226; }
+
+  table.cal-table td {
+    vertical-align: top;
+    border: 1px solid #e0c97a;
+    padding: 5px 6px;
+    height: 95px;
+    width: 14.28%;
+    background: #fffdf5;
+  }
+  table.cal-table td.empty       { background: #f5f0e0; }
+  table.cal-table td.col-sun,
+  table.cal-table td.col-sat     { background: #fff5f5; }
+  table.cal-table td.is-today    { background: #fff8dc; border: 2px solid #d4a017 !important; }
+
+  table.cal-table td.s-confirmed { background: #d4edda !important; }
+  table.cal-table td.s-pending   { background: #fff3cd !important; }
+  table.cal-table td.s-rejected  { background: #f8d7da !important; }
+  table.cal-table td.s-cancelled { background: #e2e3e5 !important; }
+
+  .t-date {
+    font-size: 0.6rem;
+    color: #888;
+    line-height: 1;
+    margin-bottom: 1px;
+  }
+  .e-date {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #111;
+    line-height: 1;
+  }
+  .col-sun .e-date, .col-sat .e-date { color: #8B0000; }
+
+  .moon-lbl {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-top: 3px;
+  }
+  .moon-amavasai  { background: #222; color: #fff; }
+  .moon-pournami  { background: #e8d5f5; color: #5b2c8d; border: 1px solid #c39bd3; }
+  .moon-muhurtham { background: #fff3cd; color: #856404; border: 1px solid #ffc107; }
+
+  .bk-badge {
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-top: 3px;
+  }
+  .bk-confirmed { background: #28a745; color: #fff; }
+  .bk-pending   { background: #ffc107; color: #000; }
+  .bk-rejected  { background: #dc3545; color: #fff; }
+  .bk-cancelled { background: #6c757d; color: #fff; }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 8px 18px;
+    padding: 10px 20px; background: #fdf0d5;
+    border-top: 1px solid #d4a017; font-size: 0.78rem;
+  }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .ld { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+</style>
+
+<div class="cal-wrap">
+
+  <div class="cal-head">
+    <h2>🪔 {{ tamil_month }} — {{ month_name }} {{ year }}</h2>
+    <p>திருமண மகால் — முன்பதிவு நாட்காட்டி</p>
+  </div>
+
+  <div class="cal-nav">
+    <a href="?year={{ prev_year }}&month={{ prev_month }}">&#8592; {{ prev_month }}/{{ prev_year }}</a>
+    <strong>{{ month_name }} {{ year }} — {{ tamil_month }}</strong>
+    <a href="?year={{ next_year }}&month={{ next_month }}">{{ next_month }}/{{ next_year }} &#8594;</a>
+  </div>
+
+  <table class="cal-table">
+    <thead>
+      <tr>
+        <th>ஞாயிறு<br><small>Sun</small></th>
+        <th>திங்கள்<br><small>Mon</small></th>
+        <th>செவ்வாய்<br><small>Tue</small></th>
+        <th>புதன்<br><small>Wed</small></th>
+        <th>வியாழன்<br><small>Thu</small></th>
+        <th>வெள்ளி<br><small>Fri</small></th>
+        <th>சனி<br><small>Sat</small></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for week in cal %}
+      <tr>
+        {% for cell in week %}
+        {% if cell.day == 0 %}
+          <td class="empty"></td>
+        {% else %}
+          <td class="
+            {% if forloop.counter0 == 0 %}col-sun{% endif %}
+            {% if forloop.counter0 == 6 %}col-sat{% endif %}
+            {% if cell.is_today %}is-today{% endif %}
+            {% if cell.status == 'Confirmed' %}s-confirmed
+            {% elif cell.status == 'Pending' %}s-pending
+            {% elif cell.status == 'Rejected' %}s-rejected
+            {% elif cell.status == 'Cancelled' %}s-cancelled
+            {% endif %}
+          ">
+            <div class="t-date">{{ cell.tamil_date }}</div>
+            <div class="e-date">{{ cell.day }}</div>
+
+            {% if cell.moon == 'amavasai' %}
+              <div><span class="moon-lbl moon-amavasai">🌑 அமாவாசை</span></div>
+            {% elif cell.moon == 'pournami' %}
+              <div><span class="moon-lbl moon-pournami">🌕 பௌர்ணமி</span></div>
+            {% endif %}
+            {% if cell.muhurtham %}
+              <div><span class="moon-lbl moon-muhurtham">🪔 முகூர்த்தம்</span></div>
+            {% endif %}
+
+            {% if cell.status %}
+              <div>
+                <span class="bk-badge bk-{{ cell.status|lower }}">
+                  {% if cell.status == 'Confirmed' %}✅ Booked
+                  {% elif cell.status == 'Pending' %}⏳ Pending
+                  {% elif cell.status == 'Rejected' %}❌ Rejected
+                  {% elif cell.status == 'Cancelled' %}🚫 Cancelled
+                  {% endif %}
+                </span>
+              </div>
+            {% endif %}
+          </td>
+        {% endif %}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="legend">
+    <span><span class="ld" style="background:#222"></span> அமாவாசை</span>
+    <span><span class="ld" style="background:#e8d5f5;border:1px solid #c39bd3"></span> பௌர்ணமி</span>
+    <span><span class="ld" style="background:#fff3cd;border:1px solid #ffc107"></span> முகூர்த்தம்</span>
+    <span><span class="ld" style="background:#28a745"></span> Booked</span>
+    <span><span class="ld" style="background:#ffc107"></span> Pending</span>
+    <span><span class="ld" style="background:#dc3545"></span> Rejected</span>
+    <span><span class="ld" style="background:#6c757d"></span> Cancelled</span>
+  </div>
+
+</div>
+
+{% endblock %}

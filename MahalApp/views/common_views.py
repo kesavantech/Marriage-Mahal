@@ -19,6 +19,120 @@ def home_view(request):
     }
     return render(request, 'home.html', context)
 
+def booking_details_view(request):
+    import calendar
+    import math
+    from datetime import date
+
+    def moon_phase(d):
+        """Returns moon age in days (0=new moon, ~15=full moon, ~29.5=next new moon)"""
+        # Known new moon reference: Jan 6, 2000
+        known_new_moon = date(2000, 1, 6)
+        lunar_cycle = 29.53058867
+        delta = (d - known_new_moon).days
+        age = delta % lunar_cycle
+        return age
+
+    def get_day_info(d):
+        age = moon_phase(d)
+        weekday = d.weekday()  # 0=Mon, 6=Sun
+        moon = None
+        if age <= 1.5 or age >= 28.0:
+            moon = 'amavasai'
+        elif 13.5 <= age <= 16.0:
+            moon = 'pournami'
+        muhurtham = weekday in [2, 3, 4] and moon != 'amavasai'
+        return {'moon': moon, 'muhurtham': muhurtham}
+
+    today = date.today()
+    year = int(request.GET.get('year', today.year))
+    month = int(request.GET.get('month', today.month))
+
+    # Bookings for this month
+    bookings = Booking.objects.filter(event_date__year=year, event_date__month=month).values('event_date', 'status')
+    STATUS_PRIORITY = {'Confirmed': 1, 'Pending': 2, 'Rejected': 3, 'Cancelled': 4}
+    date_status = {}
+    for b in bookings:
+        d = b['event_date']
+        s = b['status']
+        if d not in date_status or STATUS_PRIORITY.get(s, 9) < STATUS_PRIORITY.get(date_status[d], 9):
+            date_status[d] = s
+
+    # Tamil date calculation (approximate: Tamil month starts ~mid-April)
+    # Simple approach: offset from a known Tamil new year
+    from datetime import date as date_cls, timedelta
+    TAMIL_NEW_YEAR_2025 = date_cls(2025, 4, 14)  # சித்திரை 1, 2025
+    TAMIL_NEW_YEAR_2024 = date_cls(2024, 4, 14)
+    TAMIL_NEW_YEAR_2026 = date_cls(2026, 4, 14)
+
+    def get_tamil_date(d):
+        # Pick the correct Tamil new year reference
+        for tny in [date_cls(2026,4,14), date_cls(2025,4,14), date_cls(2024,4,14), date_cls(2023,4,14)]:
+            if d >= tny:
+                offset = (d - tny).days
+                break
+        else:
+            offset = (d - date_cls(2023,4,14)).days
+
+        TAMIL_MONTH_DAYS = [31,31,31,31,31,31,30,30,30,30,30,29]
+        TAMIL_MONTH_NAMES = ['சித்திரை','வைகாசி','ஆனி','ஆடி','ஆவணி','புரட்டாசி',
+                             'ஐப்பசி','கார்த்திகை','மார்கழி','தை','மாசி','பங்குனி']
+        m = 0
+        while m < 12 and offset >= TAMIL_MONTH_DAYS[m]:
+            offset -= TAMIL_MONTH_DAYS[m]
+            m += 1
+        return TAMIL_MONTH_NAMES[m % 12], offset + 1
+
+    # Build calendar with day info
+    cal = calendar.monthcalendar(year, month)
+    cal_with_info = []
+    for week in cal:
+        week_data = []
+        for day in week:
+            if day == 0:
+                week_data.append({'day': 0, 'labels': [], 'status': None})
+            else:
+                d = date(year, month, day)
+                t_month, t_day = get_tamil_date(d)
+                week_data.append({
+                    'day': day,
+                    'tamil_date': f'{t_month} {t_day}',
+                    'moon': get_day_info(d)['moon'],
+                    'muhurtham': get_day_info(d)['muhurtham'],
+                    'status': date_status.get(d),
+                    'is_today': d == today,
+                })
+        cal_with_info.append(week_data)
+
+    # Tamil month names (aligned: April=சித்திரை)
+    TAMIL_MONTHS = [
+        'தை', 'மாசி', 'பங்குனி', 'சித்திரை', 'வைகாசி', 'ஆனி',
+        'ஆடி', 'ஆவணி', 'புரட்டாசி', 'ஐப்பசி', 'கார்த்திகை', 'மார்கழி'
+    ]
+    tamil_month = TAMIL_MONTHS[(month - 4) % 12]
+
+    prev_month = month - 1 if month > 1 else 12
+    prev_year  = year if month > 1 else year - 1
+    next_month = month + 1 if month < 12 else 1
+    next_year  = year if month < 12 else year + 1
+
+    ENGLISH_MONTHS = ['January','February','March','April','May','June',
+                      'July','August','September','October','November','December']
+
+    context = {
+        'cal': cal_with_info,
+        'year': year,
+        'month': month,
+        'month_name': ENGLISH_MONTHS[month - 1],
+        'tamil_month': tamil_month,
+        'today': today,
+        'prev_month': prev_month,
+        'prev_year': prev_year,
+        'next_month': next_month,
+        'next_year': next_year,
+    }
+    return render(request, 'booking_details.html', context)
+
 def about_view(request):
     api_key="f586208ffb5bf58837c78e0f4ce0a04a"
     latitude=11.046438148728702
