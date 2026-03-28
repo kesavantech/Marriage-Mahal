@@ -1,9 +1,138 @@
 {% extends 'base.html' %}
-
-{% block title %} Contact Us{% endblock %}
-
+{% block title %}Contact Us{% endblock %}
 {% block content %}
 
-<h1>This is contact page </h1>
+<style>
+  .contact-section { background: #fdf6e3; padding: 50px 0; }
+  .contact-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  .contact-left {
+    background: linear-gradient(135deg, #080808, #1c1b1b);
+    color: #fff;
+    padding: 40px 30px;
+  }
+  .contact-left h3 { font-weight: 700; margin-bottom: 10px; }
+  .contact-left p  { opacity: 0.85; font-size: 0.95rem; }
+  .info-item { display: flex; align-items: flex-start; gap: 14px; margin-top: 24px; }
+  .info-item i { font-size: 1.2rem; margin-top: 3px; }
+  .info-item span { font-size: 0.95rem; line-height: 1.5; }
+  .contact-right { padding: 40px 35px; }
+  .contact-right h4 { font-weight: 700; color: #8B0000; margin-bottom: 20px; }
+  .form-label { font-weight: 600; font-size: 0.9rem; }
+  .form-control:focus { border-color: #8B0000; box-shadow: 0 0 0 0.2rem rgba(139,0,0,0.15); }
+  .btn-submit {
+    background: #8B0000; color: #fff; border: none;
+    padding: 10px 30px; border-radius: 25px; font-weight: 600;
+    transition: background 0.2s;
+  }
+  .btn-submit:hover { background: #c0392b; color: #fff; }
+  .map-wrap { border-radius: 0 0 12px 12px; overflow: hidden; }
+</style>
+
+<div class="contact-section">
+  <div class="container">
+
+    {% for msg in messages %}
+      <div class="alert alert-{{ msg.tags }} alert-dismissible fade show mb-4" role="alert">
+        {{ msg }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+
+    <div class="contact-card">
+      <div class="row g-0">
+
+        <!-- Left Info Panel -->
+        <div class="col-lg-4 contact-left">
+          <h3>📞 Contact Us</h3>
+          <p> Please use the contact details below to get in touch with us. </p>
+
+          {% if home.phone %}
+          <div class="info-item">
+            <i class="fas fa-phone-alt"></i>
+            <span><strong>Phone</strong><br>{{ home.phone }}</span>
+          </div>
+          {% endif %}
+
+          {% if home.whatsapp_no %}
+          <div class="info-item">
+            <i class="fab fa-whatsapp"></i>
+            <span><strong>WhatsApp</strong><br>
+              <a href="https://wa.me/91{{ home.whatsapp_no }}" target="_blank" style="color:#fff;">
+                {{ home.whatsapp_no }}
+              </a>
+            </span>
+          </div>
+          {% endif %}
+
+          {% if home.gmail %}
+          <div class="info-item">
+            <i class="fas fa-envelope"></i>
+            <span><strong>Email</strong><br>
+              <a href="mailto:{{ home.gmail }}" style="color:#fff;">{{ home.gmail }}</a>
+            </span>
+          </div>
+          {% endif %}
+
+          <div class="info-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span><strong>Address</strong><br>Peruntholuvu, Tirupur, Tamil Nadu</span>
+          </div>
+
+          <div class="info-item">
+            <i class="fas fa-clock"></i>
+            <span><strong>Working Hours</strong><br>Mon – Sat: 9:00 AM – 6:00 PM</span>
+          </div>
+        </div>
+
+        <!-- Right Form Panel -->
+        <div class="col-lg-8 contact-right">
+          <h4>✉️ Send us a Message</h4>
+          <form method="POST">
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Your Name</label>
+                <input type="text" name="name" class="form-control" placeholder="Enter your name" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" name="phone" class="form-control" placeholder="9876543210" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control" placeholder="example@gmail.com" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Message</label>
+                <textarea name="message" class="form-control" rows="5"
+                          placeholder="Write your enquiry here..." required></textarea>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-submit">
+                  <i class="fas fa-paper-plane me-2"></i>Send Message
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Google Map -->
+    <div class="map-wrap mt-4">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3914.5!2d77.430913!3d11.046438!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDAyJzQ3LjIiTiA3N8KwMjUnNTEuMyJF!5e0!3m2!1sen!2sin!4v1"
+        width="100%" height="300" style="border:0; border-radius:12px;"
+        allowfullscreen="" loading="lazy">
+      </iframe>
+    </div>
+
+  </div>
+</div>
 
 {% endblock %}

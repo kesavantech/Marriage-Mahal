@@ -293,7 +293,20 @@ def special_view(request):
     return render(request,'special.html')
 
 def contact_view(request):
-    return render(request,'contact.html')
+    from MahalApp.models import HomeSlider, ContactMessage
+    home = HomeSlider.objects.first()
+    if request.method == 'POST':
+        name    = request.POST.get('name', '').strip()
+        email   = request.POST.get('email', '').strip()
+        phone   = request.POST.get('phone', '').strip()
+        message = request.POST.get('message', '').strip()
+        if name and email and phone and message:
+            ContactMessage.objects.create(name=name, email=email, phone=phone, message=message)
+            messages.success(request, 'Your message has been successfully sent. We will get back to you shortly.')
+        else:
+            messages.error(request, 'Please fill all fields.')
+        return redirect('contact')
+    return render(request, 'contact.html', {'home': home})
 
 def whatsapp_greet(request):
     phone_number = "919342532503"
